@@ -36,13 +36,8 @@ export default function Inicio() {
               transition={{ duration: 0.4, delay: 0.2 }}
               className="text-white text-base leading-relaxed max-w-md mb-8"
             >
-              Diseño y construyo sistemas de servidor escalables, seguros y
-              mantenibles. Especializado en{' '}
-              <span className="text-white">TypeScript</span>,{' '}
-              <span className="text-white">NestJS</span> y arquitecturas backend
-              orientadas a producción con{' '}
-              <span className="text-white">Docker</span> y{' '}
-              <span className="text-white">MongoDB</span>.
+              Analista Programador especializadome en TypeScript, NestJS y
+              arquitecturas backend con docker y MySQL.
             </motion.p>
 
             <motion.div
