@@ -28,7 +28,7 @@ const TECNOLOGIAS: Tecnologia[] = [
     color: '#3b82f6',
     Icono: Code2,
     descripcion:
-      'Tipado estático, genéricos e interfaces. Menos bugs, más confianza en tiempo de compilación.',
+      'Implementación de tipado estático, genéricos e interfaces para asegurar consistencia en el código y prevenir errores en etapas tempranas..',
   },
   {
     nombre: 'NestJS',
@@ -44,23 +44,22 @@ const TECNOLOGIAS: Tecnologia[] = [
     color: '#22c55e',
     Icono: Server,
     descripcion:
-      'Entorno de ejecución JavaScript asíncrono y orientado a eventos para servidores de alto rendimiento.',
+      'Uso de Node.js para el desarrollo de servidores eficientes y escalables mediante programación asíncrona..',
   },
   {
-    nombre: 'MongoDB',
+    nombre: 'MySQL',
     categoria: 'Base de datos',
     color: '#4ade80',
     Icono: Database,
     descripcion:
-      'Base de datos NoSQL documental con Mongoose ODM. Esquemas flexibles y agregaciones potentes.',
+      'Base de datos SQL relacional con TypeORM para la gestión de migraciones y la creación de entidades.',
   },
   {
     nombre: 'Docker',
     categoria: 'Infraestructura',
     color: '#38bdf8',
     Icono: Container,
-    descripcion:
-      'Contenedores para entornos reproducibles. Docker Compose para orquestación de servicios.',
+    descripcion: 'Contenedores para entornos reproducibles.',
   },
   {
     nombre: 'Git & GitHub',
@@ -68,15 +67,14 @@ const TECNOLOGIAS: Tecnologia[] = [
     color: '#fb923c',
     Icono: GitBranch,
     descripcion:
-      'Flujos de trabajo con branches, pull requests, code reviews y CI/CD pipelines.',
+      'Flujos de trabajo con branches, pull requests y CI/CD pipelines.',
   },
   {
     nombre: 'npm',
     categoria: 'Gestor de paquetes',
     color: '#f87171',
     Icono: Package,
-    descripcion:
-      'Gestión de dependencias, scripts de automatización y publicación de paquetes en el registry.',
+    descripcion: 'Gestión de dependencias, scripts de automatización.',
   },
   {
     nombre: 'JWT & Auth',
@@ -84,7 +82,7 @@ const TECNOLOGIAS: Tecnologia[] = [
     color: '#c084fc',
     Icono: ShieldCheck,
     descripcion:
-      'JSON Web Tokens para autenticación stateless, refresh tokens y control de acceso por roles.',
+      'JSON Web Tokens para autenticación y control de acceso por roles.',
   },
 ];
 

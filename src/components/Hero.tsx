@@ -36,8 +36,10 @@ export default function Inicio() {
               transition={{ duration: 0.4, delay: 0.2 }}
               className="text-white text-base leading-relaxed max-w-md mb-8"
             >
-              Analista Programador especializadome en TypeScript, NestJS y
-              arquitecturas backend con docker y MySQL.
+              Analista Programador con enfoque en desarrollo Backend,
+              especializado en TypeScript y NestJS. Experiencia en construcción
+              de APIs y sistemas web escalables, así como en la implementación y
+              despliegue utilizando Docker y MySQL.
             </motion.p>
 
             <motion.div

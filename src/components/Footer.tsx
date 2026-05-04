@@ -56,10 +56,10 @@ export default function PieDePagina() {
         {/* Barra inferior */}
         <div className="mt-10 pt-6 border-t border-[#0f1929] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[#64748b] text-xs font-mono">
-            © {anio} Backend Developer Portfolio. All rights reserved.
+            © {anio} Brian Vilches Portfolio. Todos los derechos reservados.
           </p>
           <p className="text-[#64748b] text-xs font-mono">
-            Built with Next.js · Tailwind CSS · Framer Motion
+            Next.js · Tailwind CSS
           </p>
         </div>
       </div>

@@ -8,20 +8,17 @@ const PILARES = [
   {
     Icono: GraduationCap,
     titulo: 'Programación y Análisis de Sistemas',
-    descripcion:
-      'Instituto Profesional San Sebastián CIISA — 2023 · 2025',
+    descripcion: 'Instituto Profesional San Sebastián CIISA — 2023 · 2025',
   },
   {
     Icono: BookOpen,
     titulo: 'Bootcamp Backend DDC',
-    descripcion:
-      'Universidad de Chile — 2025',
+    descripcion: 'Universidad de Chile — 2025',
   },
   {
     Icono: Wrench,
     titulo: 'Ingeniería en Construcción',
-    descripcion:
-      'INACAP, Universidad Tecnológica de Chile — 2010 · 2016',
+    descripcion: 'INACAP, Universidad Tecnológica de Chile — 2010 · 2016',
   },
 ];
 
@@ -62,18 +59,20 @@ export default function SobreMi() {
             transition={{ duration: 0.4, delay: 0.1 }}
           >
             <p className="text-white text-base leading-relaxed mb-4">
-              Soy un desarrollador backend enfocado en construir sistemas de
-              servidor robustos, escalables y seguros. Mi especialidad es
-              diseñar <span className="text-white">APIs REST</span> con{' '}
-              <span className="text-white">NestJS</span> y{' '}
-              <span className="text-white">TypeScript</span>, siguiendo
-              principios de arquitectura limpia y SOLID.
+              Analista Programador con orientación al desarrollo Backend.
+              Experiencia en desarrollo de APIs REST utilizando TypeScript y
+              NestJS, priorizando la claridad del código y escalabilidad.
+              También me desempeño en el desarrollo frontend, trabajando con
+              tecnologías como React, lo que me permite desenvolverme en la
+              construcción de sistemas y aplicaciones web de manera integral.
+              Manejo de bases de datos relacionales con MySQL y uso de Docker
+              para la gestión de entornos de desarrollo y despliegue en
+              servidor.
             </p>
             <p className="text-white text-base leading-relaxed mb-8">
-              Trabajo cómodamente con{' '}
-              <span className="text-white">MongoDB</span> para el modelado de
-              datos y con <span className="text-white">Docker</span> para
-              entornos de desarrollo reproducibles y despliegues consistentes.
+              Interesado en integrarme a equipos de trabajo donde pueda aportar
+              con soluciones backend y seguir fortaleciendo mis conocimientos en
+              entornos productivos.
             </p>
           </motion.div>
 
