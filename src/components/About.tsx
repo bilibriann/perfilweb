@@ -32,14 +32,13 @@ const variantesElemento = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
 };
 
-export default function SobreMi() {
+export default function SobreMi({ bg }: { bg: string }) {
   const refSeccion = useRef(null);
   const enVista = useInView(refSeccion, { once: true, margin: '-80px' });
 
   return (
-    <section id="about" className="py-24">
+    <section id="about" className="py-24" style={{ background: bg }}>
       <div className="max-w-6xl mx-auto px-6">
-        {/* Encabezado */}
         <motion.div
           ref={refSeccion}
           initial={{ opacity: 0, y: 16 }}
@@ -47,18 +46,17 @@ export default function SobreMi() {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <h2 className="text-3xl font-bold text-[#f1f5f9] mb-3">Sobre mí</h2>
-          <div className="h-0.5 w-10 bg-indigo-500" />
+          <h2 className="text-3xl font-bold text-[#f0f4f8] mb-3">Sobre mí</h2>
+          <div className="h-0.5 w-10" style={{ background: '#00FFD4' }} />
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Biografía y estadísticas */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={enVista ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            <p className="text-white text-base leading-relaxed mb-4">
+            <p className="text-[#5a7080] text-base leading-relaxed mb-4">
               Analista Programador con orientación al desarrollo Backend.
               Experiencia en desarrollo de APIs REST utilizando TypeScript y
               NestJS, priorizando la claridad del código y escalabilidad.
@@ -69,14 +67,13 @@ export default function SobreMi() {
               para la gestión de entornos de desarrollo y despliegue en
               servidor.
             </p>
-            <p className="text-white text-base leading-relaxed mb-8">
+            <p className="text-[#5a7080] text-base leading-relaxed mb-8">
               Interesado en integrarme a equipos de trabajo donde pueda aportar
               con soluciones backend y seguir fortaleciendo mis conocimientos en
               entornos productivos.
             </p>
           </motion.div>
 
-          {/* Pilares */}
           <motion.div
             variants={variantesContenedor}
             initial="oculto"
@@ -87,16 +84,26 @@ export default function SobreMi() {
               <motion.div
                 key={titulo}
                 variants={variantesElemento}
-                className="flex items-start gap-4 p-4 border border-[#1a2a3a] bg-[#0f1929] hover:border-indigo-500/30 transition-colors"
+                className="flex items-start gap-4 p-4 transition-colors"
+                style={{ border: '1px solid #1a2535', background: '#111c2b' }}
+                onMouseEnter={e =>
+                  ((e.currentTarget as HTMLElement).style.borderColor = '#253040')
+                }
+                onMouseLeave={e =>
+                  ((e.currentTarget as HTMLElement).style.borderColor = '#1a2535')
+                }
               >
-                <div className="w-9 h-9 border border-[#1a2a3a] bg-[#0c1220] flex items-center justify-center shrink-0">
-                  <Icono size={16} className="text-indigo-400" />
+                <div
+                  className="w-9 h-9 flex items-center justify-center shrink-0"
+                  style={{ border: '1px solid #1a2535', background: '#0c1520' }}
+                >
+                  <Icono size={16} style={{ color: '#00FFD4' }} />
                 </div>
                 <div>
-                  <div className="text-[#f1f5f9] font-semibold text-sm mb-1">
+                  <div className="text-[#f0f4f8] font-semibold text-sm mb-1">
                     {titulo}
                   </div>
-                  <div className="text-[#94a3b8] text-sm leading-relaxed">
+                  <div className="text-[#5a7080] text-sm leading-relaxed">
                     {descripcion}
                   </div>
                 </div>

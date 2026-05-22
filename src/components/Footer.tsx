@@ -11,32 +11,33 @@ const ENLACES_NAV = [
 ];
 
 const REDES_SOCIALES = [
-  { Icono: Github, enlace: 'https://github.com', etiqueta: 'GitHub' },
-  { Icono: Linkedin, enlace: 'https://linkedin.com', etiqueta: 'LinkedIn' },
-  { Icono: Mail, enlace: 'mailto:tu@email.com', etiqueta: 'Email' },
+  { Icono: Github,   enlace: 'https://github.com/bilibriann',          etiqueta: 'GitHub' },
+  { Icono: Linkedin, enlace: 'https://www.linkedin.com/in/brian-vilches', etiqueta: 'LinkedIn' },
+  { Icono: Mail,     enlace: 'mailto:b.vilchesm@gmail.com',             etiqueta: 'Email' },
 ];
 
-export default function PieDePagina() {
+export default function PieDePagina({ bg }: { bg: string }) {
   const anio = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-[#1a2a3a] bg-[#070b14]">
+    <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: bg }}>
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          {/* Navegación */}
           <nav className="flex flex-wrap justify-center gap-6">
             {ENLACES_NAV.map(({ etiqueta, enlace }) => (
               <a
                 key={enlace}
                 href={enlace}
-                className="text-sm text-[#64748b] hover:text-[#94a3b8] transition-colors"
+                className="text-sm transition-colors"
+                style={{ color: '#4a5a6a' }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#5a7080')}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#4a5a6a')}
               >
                 {etiqueta}
               </a>
             ))}
           </nav>
 
-          {/* Redes sociales */}
           <div className="flex items-center gap-4">
             {REDES_SOCIALES.map(({ Icono, enlace, etiqueta }) => (
               <a
@@ -45,7 +46,10 @@ export default function PieDePagina() {
                 target={enlace.startsWith('http') ? '_blank' : undefined}
                 rel="noopener noreferrer"
                 aria-label={etiqueta}
-                className="text-[#64748b] hover:text-[#94a3b8] transition-colors"
+                className="transition-colors"
+                style={{ color: '#4a5a6a' }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = '#5a7080')}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = '#4a5a6a')}
               >
                 <Icono size={17} />
               </a>
@@ -53,12 +57,14 @@ export default function PieDePagina() {
           </div>
         </div>
 
-        {/* Barra inferior */}
-        <div className="mt-10 pt-6 border-t border-[#0f1929] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-[#64748b] text-xs font-mono">
+        <div
+          className="mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
+          style={{ borderTop: '1px solid #111c2b' }}
+        >
+          <p className="text-[#4a5a6a] text-xs font-mono">
             © {anio} Brian Vilches Portfolio. Todos los derechos reservados.
           </p>
-          <p className="text-[#64748b] text-xs font-mono">
+          <p className="text-[#4a5a6a] text-xs font-mono">
             Next.js · Tailwind CSS
           </p>
         </div>

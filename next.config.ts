@@ -1,11 +1,11 @@
 import type { NextConfig } from 'next'
 
-const isProd = process.env.NODE_ENV === 'production'
+const basePath = process.env.DEPLOY_TARGET === 'github' ? '/perfilweb' : ''
 
 const nextConfig: NextConfig = {
   output: 'export',
-  basePath: isProd ? '/perfilweb' : '',
-  assetPrefix: isProd ? '/perfilweb/' : '',
+  basePath,
+  assetPrefix: basePath ? `${basePath}/` : '',
   trailingSlash: true,
   images: {
     unoptimized: true,

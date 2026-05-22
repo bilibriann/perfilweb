@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git remote:*)"
+      "Bash(git remote:*)",
+      "Bash(npm run *)",
+      "Bash(findstr \"src\\\\|href\\\\|_next\")",
+      "Bash(npm install *)",
+      "WebFetch(domain:pagecoder.ai)",
+      "Bash(node -e \"const p=require\\('playwright'\\); console.log\\('ok'\\)\")",
+      "Bash(node -e \"require\\('puppeteer'\\); console.log\\('ok'\\)\")",
+      "PowerShell(Start-Process \"http://localhost:3000\" ; Start-Sleep -Seconds 2; Write-Output \"Browser opened\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(curl -s http://localhost:3000)",
+      "PowerShell(Start-Process \"http://localhost:3000\")",
+      "Bash(npx tsc *)"
     ]
   }
 }

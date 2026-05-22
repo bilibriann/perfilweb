@@ -3,14 +3,7 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import {
-  Code2,
-  Layers,
-  Server,
-  Database,
-  Container,
-  GitBranch,
-  Package,
-  ShieldCheck,
+  Code2, Layers, Server, Database, Container, GitBranch, LayoutTemplate,
 } from 'lucide-react';
 
 interface Tecnologia {
@@ -28,7 +21,7 @@ const TECNOLOGIAS: Tecnologia[] = [
     color: '#3b82f6',
     Icono: Code2,
     descripcion:
-      'Implementación de tipado estático, genéricos e interfaces para asegurar consistencia en el código y prevenir errores en etapas tempranas..',
+      'Implementación de tipado estático, genéricos e interfaces para asegurar consistencia en el código y prevenir errores en etapas tempranas.',
   },
   {
     nombre: 'NestJS',
@@ -44,7 +37,7 @@ const TECNOLOGIAS: Tecnologia[] = [
     color: '#22c55e',
     Icono: Server,
     descripcion:
-      'Uso de Node.js para el desarrollo de servidores eficientes y escalables mediante programación asíncrona..',
+      'Uso de Node.js para el desarrollo de servidores eficientes y escalables mediante programación asíncrona.',
   },
   {
     nombre: 'MySQL',
@@ -70,30 +63,22 @@ const TECNOLOGIAS: Tecnologia[] = [
       'Flujos de trabajo con branches, pull requests y CI/CD pipelines.',
   },
   {
-    nombre: 'npm',
-    categoria: 'Gestor de paquetes',
-    color: '#f87171',
-    Icono: Package,
-    descripcion: 'Gestión de dependencias, scripts de automatización.',
-  },
-  {
-    nombre: 'JWT & Auth',
-    categoria: 'Seguridad',
-    color: '#c084fc',
-    Icono: ShieldCheck,
+    nombre: 'MVC',
+    categoria: 'Arquitectura',
+    color: '#a78bfa',
+    Icono: LayoutTemplate,
     descripcion:
-      'JSON Web Tokens para autenticación y control de acceso por roles.',
+      'Patrón Modelo-Vista-Controlador para separación de responsabilidades y código mantenible.',
   },
 ];
 
-export default function SeccionTecnologias() {
+export default function SeccionTecnologias({ bg }: { bg: string }) {
   const refSeccion = useRef(null);
   const enVista = useInView(refSeccion, { once: true, margin: '-80px' });
 
   return (
-    <section id="stack" className="py-24 bg-[#080e1a]">
+    <section id="stack" className="py-24" style={{ background: bg }}>
       <div className="max-w-6xl mx-auto px-6">
-        {/* Encabezado */}
         <motion.div
           ref={refSeccion}
           initial={{ opacity: 0, y: 16 }}
@@ -101,17 +86,14 @@ export default function SeccionTecnologias() {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <h2 className="text-3xl font-bold text-[#f1f5f9] mb-3">
-            Tecnologías
-          </h2>
-          <div className="h-0.5 w-10 bg-indigo-500" />
-          <p className="text-[#94a3b8] mt-4 text-sm max-w-lg">
+          <h2 className="text-3xl font-bold text-[#f0f4f8] mb-3">Tecnologías</h2>
+          <div className="h-0.5 w-10" style={{ background: '#00FFD4' }} />
+          <p className="text-[#5a7080] mt-4 text-sm max-w-lg">
             Herramientas con las que trabajo a diario para diseñar y construir
             sistemas backend orientados a producción.
           </p>
         </motion.div>
 
-        {/* Grilla */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {TECNOLOGIAS.map((tecnologia, indice) => (
             <TarjetaTecnologia
@@ -143,14 +125,22 @@ function TarjetaTecnologia({
       initial={{ opacity: 0, y: 16 }}
       animate={enVista ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.35, delay: indice * 0.06 }}
-      className="border border-[#1a2a3a] bg-[#0f1929] p-5 hover:border-[#2a3a4a] transition-colors"
+      className="p-5 transition-colors"
+      style={{ border: '1px solid #1a2535', background: '#111c2b' }}
+      onMouseEnter={e =>
+        ((e.currentTarget as HTMLElement).style.borderColor = '#253040')
+      }
+      onMouseLeave={e =>
+        ((e.currentTarget as HTMLElement).style.borderColor = '#1a2535')
+      }
     >
-      {/* Icono */}
-      <div className="w-10 h-10 border border-[#1a2a3a] bg-[#0c1220] flex items-center justify-center mb-4">
+      <div
+        className="w-10 h-10 flex items-center justify-center mb-4"
+        style={{ border: '1px solid #1a2535', background: '#0c1520' }}
+      >
         <Icono size={18} style={{ color }} />
       </div>
 
-      {/* Categoría */}
       <div
         className="text-[10px] font-mono uppercase tracking-widest mb-1.5"
         style={{ color }}
@@ -158,13 +148,9 @@ function TarjetaTecnologia({
         {categoria}
       </div>
 
-      {/* Nombre */}
-      <div className="text-[#f1f5f9] font-bold mb-2">{nombre}</div>
+      <div className="text-[#f0f4f8] font-bold mb-2">{nombre}</div>
 
-      {/* Descripción */}
-      <div className="text-[#94a3b8] text-xs leading-relaxed">
-        {descripcion}
-      </div>
+      <div className="text-[#5a7080] text-xs leading-relaxed">{descripcion}</div>
     </motion.div>
   );
 }
