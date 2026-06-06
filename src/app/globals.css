@@ -2,41 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── CSS Variables — midnight defaults (sobrescritos por ThemeProvider) ─── */
 :root {
-  --bg-base: #070b14;
-  --accent: #6366f1;
+  --theme-bg:           #0b0f18;
+  --theme-surface:      rgba(11, 15, 24, 0.75);
+  --theme-panel:        rgba(14, 18, 28, 0.82);
+  --theme-panel-hover:  rgba(22, 28, 40, 0.88);
+  --theme-bg-alt:       #060c14;
+  --theme-border:       rgba(30, 42, 65, 0.8);
+  --theme-border-hover: rgba(48, 68, 100, 0.9);
+  --theme-fg:           #c9d1d9;
+  --theme-fg-muted:     #8b949e;
+  --theme-fg-dim:       #6e7681;
+  --theme-accent:       #60a5fa;
+  --theme-accent-rgb:   60, 165, 250;
+  --theme-accent-on:    #0d1117;
+  --theme-glow-1:       rgba(56, 100, 255, 0.18);
+  --theme-glow-2:       rgba(99, 102, 241, 0.10);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: #070b14;
-  color: #f1f5f9;
+  background-color: var(--theme-bg);
+  color: var(--theme-fg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #0c1220;
-}
-::-webkit-scrollbar-thumb {
-  background: #4f46e5;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #6366f1;
+/* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--theme-bg); }
+::-webkit-scrollbar-thumb { background: var(--theme-border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--theme-accent); }
+
+/* ─── Selection ─────────────────────────────────────────────────────────── */
+::selection {
+  background: rgba(var(--theme-accent-rgb), 0.25);
+  color: var(--theme-fg);
 }
 
-::selection {
-  background: rgba(99, 102, 241, 0.25);
-  color: #f1f5f9;
+/* ─── Background animations (used by effects/ components) ──────────────── */
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50%       { opacity: 0.65; transform: scale(1.06); }
+}
+
+@keyframes glow-breathe-2 {
+  0%, 100% { opacity: 0.20; transform: scale(1) translate(0, 0); }
+  50%       { opacity: 0.42; transform: scale(1.04) translate(2%, -1%); }
+}
+
+@keyframes glow-drift {
+  0%   { transform: translate(0, 0)   scale(1); }
+  33%  { transform: translate(2%, 2%) scale(1.04); }
+  66%  { transform: translate(-1%, 1%) scale(0.98); }
+  100% { transform: translate(0, 0)   scale(1); }
+}
+
+@keyframes scan-down {
+  0%   { top: -2px;  opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { top: 100vh; opacity: 0; }
+}
+
+@keyframes neon-pulse {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.90; }
+}
+
+@keyframes retro-grid-shift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 -48px; }
+}
+
+@keyframes ocean-wave {
+  0%   { transform: translateX(-50%) scale(1,   1); }
+  33%  { transform: translateX(-52%) scale(1.03, 0.97); }
+  66%  { transform: translateX(-48%) scale(0.97, 1.03); }
+  100% { transform: translateX(-50%) scale(1,   1); }
+}
+
+@keyframes float-up-1 {
+  0%   { transform: translateY(0)    translateX(0);   opacity: 0; }
+  15%  { opacity: 0.5; }
+  85%  { opacity: 0.5; }
+  100% { transform: translateY(-60px) translateX(8px);  opacity: 0; }
+}
+
+@keyframes float-up-2 {
+  0%   { transform: translateY(0)    translateX(0);    opacity: 0; }
+  15%  { opacity: 0.4; }
+  85%  { opacity: 0.4; }
+  100% { transform: translateY(-80px) translateX(-12px); opacity: 0; }
+}
+
+@keyframes shimmer-rotate {
+  0%   { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ─── Canvas background (legacy — kept for compatibility) ───────────────── */
+.odysseus-bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: var(--bg-effect-intensity, 1);
+  mix-blend-mode: screen;
 }

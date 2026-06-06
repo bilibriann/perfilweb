@@ -45,7 +45,7 @@ const TRABAJOS: Trabajo[] = [
 
 export default function SeccionExperiencia({ bg }: { bg: string }) {
   const refSeccion = useRef(null);
-  const enVista = useInView(refSeccion, { once: true, margin: '-80px' });
+  const enVista    = useInView(refSeccion, { once: true, margin: '-80px' });
 
   return (
     <section id="experience" className="py-24" style={{ background: bg }}>
@@ -57,14 +57,16 @@ export default function SeccionExperiencia({ bg }: { bg: string }) {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <h2 className="text-3xl font-bold text-[#f0f4f8] mb-3">Experiencia</h2>
-          <div className="h-0.5 w-10" style={{ background: '#00FFD4' }} />
+          <h2 className="text-3xl font-bold mb-3" style={{ color: 'var(--theme-fg)' }}>
+            Experiencia
+          </h2>
+          <div className="h-0.5 w-10" style={{ background: 'var(--theme-accent)' }} />
         </motion.div>
 
         <div className="relative">
           <div
             className="absolute left-5 top-0 bottom-0 w-px hidden md:block"
-            style={{ background: '#1a2535' }}
+            style={{ background: 'var(--theme-border)' }}
           />
           <div className="flex flex-col gap-6">
             {TRABAJOS.map((trabajo, indice) => (
@@ -100,36 +102,38 @@ function ElementoTimeline({
     >
       <div
         className="hidden md:flex absolute left-0 top-1 w-10 h-10 items-center justify-center"
-        style={{ border: '1px solid #1a2535', background: '#111c2b' }}
+        style={{ border: '1px solid var(--theme-border)', background: 'var(--theme-panel)' }}
       >
-        <Briefcase size={14} style={{ color: '#00FFD4' }} />
+        <Briefcase size={14} style={{ color: 'var(--theme-accent)' }} />
       </div>
 
       <div
         className="p-6 transition-colors"
-        style={{ border: '1px solid #1a2535', background: '#111c2b' }}
+        style={{ border: '1px solid var(--theme-border)', background: 'var(--theme-panel)' }}
         onMouseEnter={e =>
-          ((e.currentTarget as HTMLElement).style.borderColor = '#253040')
+          ((e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border-hover)')
         }
         onMouseLeave={e =>
-          ((e.currentTarget as HTMLElement).style.borderColor = '#1a2535')
+          ((e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border)')
         }
       >
         <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
           <div>
-            <h3 className="text-[#f0f4f8] font-bold text-lg">{trabajo.rol}</h3>
-            <div className="text-sm mt-0.5" style={{ color: '#00FFD4' }}>
+            <h3 className="font-bold text-lg" style={{ color: 'var(--theme-fg)' }}>
+              {trabajo.rol}
+            </h3>
+            <div className="text-sm mt-0.5" style={{ color: 'var(--theme-accent)' }}>
               {trabajo.empresa}
             </div>
           </div>
           <div className="flex flex-col items-end gap-1">
-            <div className="flex items-center gap-1.5 text-[#5a7080] text-xs font-mono">
+            <div className="flex items-center gap-1.5 text-xs font-mono" style={{ color: 'var(--theme-fg-muted)' }}>
               <Calendar size={11} />
               {trabajo.periodo}
             </div>
             <span
-              className="px-2 py-0.5 text-[11px] font-mono text-[#5a7080]"
-              style={{ border: '1px solid #1a2535' }}
+              className="px-2 py-0.5 text-[11px] font-mono"
+              style={{ border: '1px solid var(--theme-border)', color: 'var(--theme-fg-muted)' }}
             >
               {trabajo.tipo}
             </span>
@@ -138,10 +142,10 @@ function ElementoTimeline({
 
         <ul className="space-y-1.5 mb-4">
           {trabajo.puntos.map((punto, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-[#5a7080] text-sm">
+            <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--theme-fg-muted)' }}>
               <span
                 className="mt-2 w-1 h-1 rounded-full shrink-0"
-                style={{ background: '#00FFD4' }}
+                style={{ background: 'var(--theme-accent)' }}
               />
               {punto}
             </li>
@@ -150,13 +154,17 @@ function ElementoTimeline({
 
         <div
           className="flex flex-wrap gap-1.5 pt-4"
-          style={{ borderTop: '1px solid #1a2535' }}
+          style={{ borderTop: '1px solid var(--theme-border)' }}
         >
           {trabajo.etiquetas.map((etiqueta) => (
             <span
               key={etiqueta}
-              className="px-2 py-0.5 text-[11px] font-mono text-[#5a7080]"
-              style={{ background: '#0c1520', border: '1px solid #1a2535' }}
+              className="px-2 py-0.5 text-[11px] font-mono"
+              style={{
+                background: 'var(--theme-bg-alt)',
+                border: '1px solid var(--theme-border)',
+                color: 'var(--theme-fg-muted)',
+              }}
             >
               {etiqueta}
             </span>

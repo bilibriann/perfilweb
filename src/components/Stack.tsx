@@ -74,7 +74,7 @@ const TECNOLOGIAS: Tecnologia[] = [
 
 export default function SeccionTecnologias({ bg }: { bg: string }) {
   const refSeccion = useRef(null);
-  const enVista = useInView(refSeccion, { once: true, margin: '-80px' });
+  const enVista    = useInView(refSeccion, { once: true, margin: '-80px' });
 
   return (
     <section id="stack" className="py-24" style={{ background: bg }}>
@@ -86,9 +86,11 @@ export default function SeccionTecnologias({ bg }: { bg: string }) {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <h2 className="text-3xl font-bold text-[#f0f4f8] mb-3">Tecnologías</h2>
-          <div className="h-0.5 w-10" style={{ background: '#00FFD4' }} />
-          <p className="text-[#5a7080] mt-4 text-sm max-w-lg">
+          <h2 className="text-3xl font-bold mb-3" style={{ color: 'var(--theme-fg)' }}>
+            Tecnologías
+          </h2>
+          <div className="h-0.5 w-10" style={{ background: 'var(--theme-accent)' }} />
+          <p className="mt-4 text-sm max-w-lg" style={{ color: 'var(--theme-fg-muted)' }}>
             Herramientas con las que trabajo a diario para diseñar y construir
             sistemas backend orientados a producción.
           </p>
@@ -126,31 +128,27 @@ function TarjetaTecnologia({
       animate={enVista ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.35, delay: indice * 0.06 }}
       className="p-5 transition-colors"
-      style={{ border: '1px solid #1a2535', background: '#111c2b' }}
+      style={{ border: '1px solid var(--theme-border)', background: 'var(--theme-panel)' }}
       onMouseEnter={e =>
-        ((e.currentTarget as HTMLElement).style.borderColor = '#253040')
+        ((e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border-hover)')
       }
       onMouseLeave={e =>
-        ((e.currentTarget as HTMLElement).style.borderColor = '#1a2535')
+        ((e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border)')
       }
     >
       <div
         className="w-10 h-10 flex items-center justify-center mb-4"
-        style={{ border: '1px solid #1a2535', background: '#0c1520' }}
+        style={{ border: '1px solid var(--theme-border)', background: 'var(--theme-bg-alt)' }}
       >
         <Icono size={18} style={{ color }} />
       </div>
-
-      <div
-        className="text-[10px] font-mono uppercase tracking-widest mb-1.5"
-        style={{ color }}
-      >
+      <div className="text-[10px] font-mono uppercase tracking-widest mb-1.5" style={{ color }}>
         {categoria}
       </div>
-
-      <div className="text-[#f0f4f8] font-bold mb-2">{nombre}</div>
-
-      <div className="text-[#5a7080] text-xs leading-relaxed">{descripcion}</div>
+      <div className="font-bold mb-2" style={{ color: 'var(--theme-fg)' }}>{nombre}</div>
+      <div className="text-xs leading-relaxed" style={{ color: 'var(--theme-fg-muted)' }}>
+        {descripcion}
+      </div>
     </motion.div>
   );
 }

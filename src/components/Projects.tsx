@@ -10,7 +10,6 @@ interface Proyecto {
   etiquetas: string[];
   repositorio: string;
   icono: React.ReactNode;
-  acento: string;
 }
 
 const PROYECTOS: Proyecto[] = [
@@ -21,7 +20,6 @@ const PROYECTOS: Proyecto[] = [
     etiquetas: ['NestJS', 'TypeScript', 'MySQL', 'TypeORM', 'Flyway', 'JWT', 'Docker', 'Swagger'],
     repositorio: 'https://github.com/bilibriann',
     icono: <Package size={18} />,
-    acento: '#00FFD4',
   },
   {
     titulo: 'Calvary Santiago — Sitio Institucional',
@@ -30,13 +28,12 @@ const PROYECTOS: Proyecto[] = [
     etiquetas: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'MVC', 'Hostinger'],
     repositorio: 'https://github.com/bilibriann',
     icono: <Globe size={18} />,
-    acento: '#f59e0b',
   },
 ];
 
 export default function SeccionProyectos({ bg }: { bg: string }) {
   const refSeccion = useRef(null);
-  const enVista = useInView(refSeccion, { once: true, margin: '-80px' });
+  const enVista    = useInView(refSeccion, { once: true, margin: '-80px' });
 
   return (
     <section id="projects" className="py-24" style={{ background: bg }}>
@@ -48,9 +45,11 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <h2 className="text-3xl font-bold text-[#f0f4f8] mb-3">Proyectos</h2>
-          <div className="h-0.5 w-10" style={{ background: '#00FFD4' }} />
-          <p className="text-[#5a7080] mt-4 text-sm max-w-lg">
+          <h2 className="text-3xl font-bold mb-3" style={{ color: 'var(--theme-fg)' }}>
+            Proyectos
+          </h2>
+          <div className="h-0.5 w-10" style={{ background: 'var(--theme-accent)' }} />
+          <p className="mt-4 text-sm max-w-lg" style={{ color: 'var(--theme-fg-muted)' }}>
             Proyectos de backend enfocados en APIs REST, autenticación,
             microservicios y bases de datos.
           </p>
@@ -86,23 +85,27 @@ function TarjetaProyecto({
       animate={enVista ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.4, delay: indice * 0.08 }}
       className="p-6 transition-colors"
-      style={{ border: '1px solid #1a2535', background: '#111c2b' }}
+      style={{ border: '1px solid var(--theme-border)', background: 'var(--theme-panel)' }}
       onMouseEnter={e =>
-        ((e.currentTarget as HTMLElement).style.borderColor = '#253040')
+        ((e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border-hover)')
       }
       onMouseLeave={e =>
-        ((e.currentTarget as HTMLElement).style.borderColor = '#1a2535')
+        ((e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border)')
       }
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div
             className="w-8 h-8 flex items-center justify-center"
-            style={{ border: '1px solid #1a2535', background: '#0c1520', color: proyecto.acento }}
+            style={{
+              border: '1px solid var(--theme-border)',
+              background: 'var(--theme-bg-alt)',
+              color: 'var(--theme-accent)',
+            }}
           >
             {proyecto.icono}
           </div>
-          <h3 className="text-[#f0f4f8] font-semibold text-base">
+          <h3 className="font-semibold text-base" style={{ color: 'var(--theme-fg)' }}>
             {proyecto.titulo}
           </h3>
         </div>
@@ -110,14 +113,17 @@ function TarjetaProyecto({
           href={proyecto.repositorio}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#4a5a6a] hover:text-[#f0f4f8] transition-colors ml-2 shrink-0"
+          className="ml-2 shrink-0 transition-colors"
+          style={{ color: 'var(--theme-fg-dim)' }}
           aria-label="GitHub"
+          onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg)')}
+          onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg-dim)')}
         >
           <Github size={16} />
         </a>
       </div>
 
-      <p className="text-[#5a7080] text-sm leading-relaxed mb-4">
+      <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--theme-fg-muted)' }}>
         {proyecto.descripcion}
       </p>
 
@@ -125,8 +131,12 @@ function TarjetaProyecto({
         {proyecto.etiquetas.map((etiqueta) => (
           <span
             key={etiqueta}
-            className="px-2 py-0.5 text-[11px] font-mono text-[#5a7080]"
-            style={{ background: '#0c1520', border: '1px solid #1a2535' }}
+            className="px-2 py-0.5 text-[11px] font-mono"
+            style={{
+              color: 'var(--theme-fg-muted)',
+              background: 'var(--theme-bg-alt)',
+              border: '1px solid var(--theme-border)',
+            }}
           >
             {etiqueta}
           </span>

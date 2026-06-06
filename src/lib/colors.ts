@@ -1,8 +1,8 @@
 export const SECTION_COLORS = {
-  hero:       '#07090f',
-  about:      '#0b1a2e',
-  stack:      '#0c2020',
-  projects:   '#101428',
-  experience: '#071a12',
-  contact:    '#11101e',
+  hero:       '#0d1117',
+  about:      '#0e1521',
+  stack:      '#0d1820',
+  projects:   '#0f1220',
+  experience: '#0d1a16',
+  contact:    '#0e1019',
 } as const
