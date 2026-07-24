@@ -249,17 +249,6 @@ const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
               flexShrink: 0,
             }}
           >
-            <span
-              style={{
-                fontFamily: 'var(--font-mono, monospace)',
-                fontSize: '0.68rem',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: 'var(--theme-fg-dim)',
-              }}
-            >
-              perfil.ts
-            </span>
             <button
               ref={closeBtnEl}
               onClick={close}
