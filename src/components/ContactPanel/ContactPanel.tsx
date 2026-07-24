@@ -33,7 +33,11 @@ interface StatItem {
 function statsVisor(specs: EspecificacionesNave): StatItem[] {
   return [
     { label: 'Tripulación', value: specs.crew ?? '—', icon: <CrewIcon /> },
-    { label: 'Pasajeros', value: specs.passengers ?? '—', icon: <PassengersIcon /> },
+    {
+      label: 'Pasajeros',
+      value: specs.passengers ?? '—',
+      icon: <PassengersIcon />,
+    },
     { label: 'Velocidad', value: specs.maxSpeed ?? '—', icon: <SpeedIcon /> },
     { label: 'Clase HI', value: specs.hyperdrive ?? '—', icon: <ShieldIcon /> },
   ];
@@ -49,9 +53,21 @@ const svgBase = {
   'aria-hidden': true,
 };
 
-function ImageMarkerIcon({ size, className }: { size: number; className?: string }) {
+function ImageMarkerIcon({
+  size,
+  className,
+}: {
+  size: number;
+  className?: string;
+}) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...svgBase}>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      className={className}
+      {...svgBase}
+    >
       <rect x="3" y="3" width="18" height="18" rx="2" />
       <circle cx="8.5" cy="8.5" r="1.5" />
       <path d="M21 15l-5-5L5 21" />
@@ -60,7 +76,13 @@ function ImageMarkerIcon({ size, className }: { size: number; className?: string
 }
 function ContactsIcon() {
   return (
-    <svg width={20} height={20} viewBox="0 0 24 24" className={styles.listHeadIcon} {...svgBase}>
+    <svg
+      width={20}
+      height={20}
+      viewBox="0 0 24 24"
+      className={styles.listHeadIcon}
+      {...svgBase}
+    >
       <circle cx="9" cy="8" r="3" />
       <path d="M3 20a6 6 0 0 1 12 0" />
       <path d="M16 5.5a3 3 0 0 1 0 5.6M18 20a6 6 0 0 0-3-5.2" />
@@ -69,7 +91,13 @@ function ContactsIcon() {
 }
 function SearchIcon() {
   return (
-    <svg width={15} height={15} viewBox="0 0 24 24" className={styles.searchIcon} {...svgBase}>
+    <svg
+      width={15}
+      height={15}
+      viewBox="0 0 24 24"
+      className={styles.searchIcon}
+      {...svgBase}
+    >
       <circle cx="11" cy="11" r="7" />
       <path d="M21 21l-4-4" />
     </svg>
@@ -77,7 +105,13 @@ function SearchIcon() {
 }
 function ChevronRight({ className }: { className?: string }) {
   return (
-    <svg width={16} height={16} viewBox="0 0 24 24" className={className} {...svgBase}>
+    <svg
+      width={16}
+      height={16}
+      viewBox="0 0 24 24"
+      className={className}
+      {...svgBase}
+    >
       <path d="M9 6l6 6-6 6" />
     </svg>
   );
@@ -99,7 +133,13 @@ function PinIcon() {
 }
 function EmblemIcon() {
   return (
-    <svg width={26} height={26} viewBox="0 0 24 24" className={styles.manufIcon} {...svgBase}>
+    <svg
+      width={26}
+      height={26}
+      viewBox="0 0 24 24"
+      className={styles.manufIcon}
+      {...svgBase}
+    >
       <circle cx="12" cy="12" r="9" />
       <path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18" strokeWidth={1} />
     </svg>
@@ -141,14 +181,26 @@ function ShieldIcon() {
 }
 function XIcon() {
   return (
-    <svg width={18} height={18} viewBox="0 0 24 24" {...svgBase} strokeWidth={2}>
+    <svg
+      width={18}
+      height={18}
+      viewBox="0 0 24 24"
+      {...svgBase}
+      strokeWidth={2}
+    >
       <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   );
 }
 function ZoomIcon() {
   return (
-    <svg width={26} height={26} viewBox="0 0 24 24" {...svgBase} strokeWidth={1.75}>
+    <svg
+      width={26}
+      height={26}
+      viewBox="0 0 24 24"
+      {...svgBase}
+      strokeWidth={1.75}
+    >
       <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
     </svg>
   );
@@ -167,7 +219,15 @@ function LockFrame() {
 }
 
 // ── Lightbox de la imagen fijada ────────────────────────────────────────────
-function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+function Lightbox({
+  src,
+  alt,
+  onClose,
+}: {
+  src: string;
+  alt: string;
+  onClose: () => void;
+}) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -177,13 +237,32 @@ function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: ()
   }, [onClose]);
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={`Imagen de ${alt}`} className={styles.lightbox} onClick={onClose}>
-      <div className={styles.lightboxInner} onClick={(e) => e.stopPropagation()}>
-        <button type="button" onClick={onClose} aria-label="Cerrar" className={styles.lightboxClose}>
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Imagen de ${alt}`}
+      className={styles.lightbox}
+      onClick={onClose}
+    >
+      <div
+        className={styles.lightboxInner}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Cerrar"
+          className={styles.lightboxClose}
+        >
           <XIcon />
         </button>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} className={styles.lightboxImg} draggable={false} />
+        <img
+          src={src}
+          alt={alt}
+          className={styles.lightboxImg}
+          draggable={false}
+        />
         <p className={styles.lightboxCaption}>{alt}</p>
       </div>
     </div>
@@ -199,7 +278,9 @@ function Thumb({ src, alt }: { src: string; alt: string }) {
         alt={alt}
         className={styles.thumbCanvas}
         glitchOnLoad={false}
-        fallback={<ImageMarkerIcon size={16} className={styles.markerFallback} />}
+        fallback={
+          <ImageMarkerIcon size={16} className={styles.markerFallback} />
+        }
       />
     </span>
   );
@@ -262,10 +343,26 @@ function Visor({
         <span className={styles.counter}>
           {dosDigitos(posicion)} / {dosDigitos(total)}
         </span>
-        <button type="button" className={styles.navBtn} aria-label="Anterior" onClick={(e) => { stop(e); onPrev(); }}>
+        <button
+          type="button"
+          className={styles.navBtn}
+          aria-label="Anterior"
+          onClick={(e) => {
+            stop(e);
+            onPrev();
+          }}
+        >
           <ChevronLeft />
         </button>
-        <button type="button" className={styles.navBtn} aria-label="Siguiente" onClick={(e) => { stop(e); onNext(); }}>
+        <button
+          type="button"
+          className={styles.navBtn}
+          aria-label="Siguiente"
+          onClick={(e) => {
+            stop(e);
+            onNext();
+          }}
+        >
           <ChevronRight />
         </button>
       </div>
@@ -341,7 +438,9 @@ export default function ContactPanel() {
   if (errorCarga || !selected) {
     return (
       <div className={styles.container}>
-        <p className={styles.state}>No se pudo contactar con la base de datos de la flota.</p>
+        <p className={styles.state}>
+          No se pudo contactar con la base de datos de la flota.
+        </p>
       </div>
     );
   }
@@ -353,23 +452,8 @@ export default function ContactPanel() {
       {/* Columna izquierda: tarjeta de contactos */}
       <aside className={styles.listCard}>
         <div className={styles.listHead}>
-          <ContactsIcon />
-          <span className={styles.listTitle}>Contactos</span>
           <span className={styles.countPill}>{naves.length}</span>
         </div>
-
-        <div className={styles.search}>
-          <SearchIcon />
-          <input
-            type="text"
-            value={consulta}
-            onChange={(e) => setConsulta(e.target.value)}
-            placeholder="Buscar contacto..."
-            aria-label="Buscar contacto"
-            className={styles.searchInput}
-          />
-        </div>
-
         <ul className={styles.list} onKeyDown={onListKeyDown}>
           {lista.map((n, i) => {
             const isSel = n.id === selected.id;
@@ -414,7 +498,8 @@ export default function ContactPanel() {
               <h2 className={styles.title}>{selected.nombre}</h2>
               <span className={styles.titleRule} />
               <p className={styles.description}>
-                {selected.descripcion || 'Sin informe de inteligencia para este contacto.'}
+                {selected.descripcion ||
+                  'Sin informe de inteligencia para este contacto.'}
               </p>
             </div>
 
@@ -437,7 +522,11 @@ export default function ContactPanel() {
       </section>
 
       {modalOpen && (
-        <Lightbox src={selected.imagen} alt={selected.nombre} onClose={() => setModalOpen(false)} />
+        <Lightbox
+          src={selected.imagen}
+          alt={selected.nombre}
+          onClose={() => setModalOpen(false)}
+        />
       )}
     </div>
   );

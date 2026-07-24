@@ -20,14 +20,25 @@
   --focus-rgb: 254, 41, 109;
   --overlay-bg: rgba(0, 0, 0, 0.82);
   --overlay-fg: #ffffff;
-  --font-mono: var(--font-mono, ui-monospace, "SF Mono", Menlo, monospace);
+  --font-mono: var(--font-mono, ui-monospace, 'SF Mono', Menlo, monospace);
 
   display: flex;
   gap: 18px;
   align-items: stretch;
   color: var(--text-primary);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   padding: 20px;
+
+  /* Escala global del panel: 0.7 = 30% más pequeño, todo proporcional.
+     Ajusta este valor para reescalar el panel completo de una vez. */
+  --panel-scale: 0.8;
+  transform: scale(var(--panel-scale));
+  transform-origin: center;
 }
 
 /* ── Columna izquierda: tarjeta de contactos ───────────────────────────── */
@@ -38,9 +49,14 @@
   flex-direction: column;
   gap: 14px;
   padding: 16px;
-  border: 1px solid var(--border);
   border-radius: 14px;
   background: rgba(var(--accent-rgb), 0.03);
+
+  /* Escala del panel IZQUIERDO (lista de contactos), independiente.
+     1 = tamaño normal. Baja el valor para achicar solo esta columna. */
+  --list-scale: 0.8;
+  transform: scale(var(--list-scale));
+  transform-origin: center;
 }
 
 .listHead {
@@ -137,7 +153,10 @@
   background: var(--bg-card);
   color: inherit;
   font-family: inherit;
-  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .item:hover {
@@ -219,7 +238,9 @@
   color: var(--accent);
   opacity: 0;
   transform: translateX(-4px);
-  transition: opacity 160ms ease, transform 160ms ease;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
 }
 
 .itemSelected .itemChevron {
@@ -233,13 +254,21 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 10px;
   background: rgba(var(--accent-rgb), 0.03);
   overflow: hidden;
+
+  /* Escala del panel DERECHO (imagen principal + info), independiente.
+     1 = tamaño normal. Baja el valor para achicar solo esta columna. */
+  --detail-scale: 1;
+  /* Desfase vertical del panel derecho: sube el valor para bajarlo más. */
+  --detail-offset-y: 110px;
+
+  transform: translateY(var(--detail-offset-y)) scale(var(--detail-scale));
+  transform-origin: center;
 }
 
-/* Visor (imagen) ocupa la parte superior de la tarjeta, sin borde propio. */
+/* Visor (imagen) ocupa la parte superior de lpara tarjeta, sin borde propio. */
 .visor {
   position: relative;
   aspect-ratio: 16 / 9;
@@ -325,7 +354,9 @@
   background: rgba(0, 0, 0, 0.35);
   color: var(--text-primary);
   cursor: pointer;
-  transition: border-color 160ms ease, color 160ms ease;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
 }
 
 .navBtn:hover {
@@ -341,7 +372,9 @@
   color: var(--focus);
   pointer-events: none;
   filter: drop-shadow(0 0 6px rgba(var(--focus-rgb), 0.7));
-  animation: lockIn 0.5s ease-out, lockPulse 2.4s ease-in-out infinite;
+  animation:
+    lockIn 0.5s ease-out,
+    lockPulse 2.4s ease-in-out infinite;
 }
 
 @keyframes lockPulse {
@@ -498,6 +531,12 @@
   border-radius: 12px;
   background: var(--bg-card);
   text-align: center;
+
+  /* Escala de cada tarjeta de stat (mismo método que el panel).
+     Ajusta este valor para reescalar las 4 tarjetas de una vez. */
+  --cell-scale: 0.8;
+  transform: scale(var(--cell-scale));
+  transform-origin: center;
 }
 
 .statIcon {

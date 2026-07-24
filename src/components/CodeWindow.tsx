@@ -1,56 +1,72 @@
 'use client';
 
 interface Endpoint {
-  metodo: string;   // nombre del método (get color acento)
-  ruta: string;     // ruta del @Get('...')
-  valor: string;    // texto que se muestra como string de retorno
-  enlace: string;   // href del enlace
+  metodo: string; // nombre del método (get color acento)
+  ruta: string; // ruta del @Get('...')
+  valor: string; // texto que se muestra como string de retorno
+  enlace: string; // href del enlace
 }
 
 const ENDPOINTS: Endpoint[] = [
   {
     metodo: 'github',
-    ruta:   'github',
-    valor:  'github.com/bilibriann',
+    ruta: 'github',
+    valor: 'github.com/bilibriann',
     enlace: 'https://github.com/bilibriann',
   },
   {
     metodo: 'linkedin',
-    ruta:   'linkedin',
-    valor:  'linkedin.com/brian-vilches',
+    ruta: 'linkedin',
+    valor: 'linkedin.com/brian-vilches',
     enlace: 'https://linkedin.com/in/brian-vilches/',
   },
   {
     metodo: 'email',
-    ruta:   'email',
-    valor:  'b.vilchesm@gmail.com',
+    ruta: 'email',
+    valor: 'b.vilchesm@gmail.com',
     enlace: 'mailto:b.vilchesm@gmail.com',
+  },
+  {
+    metodo: 'whatsapp',
+    ruta: 'whatsapp',
+    valor: 'wa.me/56950478862',
+    enlace: 'https://wa.me/56950478862',
   },
 ];
 
 export default function VentanaContacto() {
   // Colores fijos de "editor oscuro": la ventana se mantiene legible
   // aunque la sección tenga un fondo claro (vainilla).
-  const muted  = { color: '#8b949e' } as const;
+  const muted = { color: '#8b949e' } as const;
   const accent = { color: '#4ec9b0' } as const;
 
   // Construimos las líneas del "código" para poder numerarlas automáticamente.
   const lineas: React.ReactNode[] = [
-    <div key="ctrl"><span className="text-purple-400">@Controller</span><span style={muted}>(&apos;contact&apos;)</span></div>,
-    <div key="class"><span className="text-blue-400">export class </span><span className="text-yellow-300">ContactController </span><span style={muted}>{'{'}</span></div>,
+    <div key="ctrl">
+      <span className="text-purple-400">@Controller</span>
+      <span style={muted}>(&apos;contact&apos;)</span>
+    </div>,
+    <div key="class">
+      <span className="text-blue-400">export class </span>
+      <span className="text-yellow-300">ContactController </span>
+      <span style={muted}>{'{'}</span>
+    </div>,
   ];
 
   ENDPOINTS.forEach(({ metodo, ruta, valor, enlace }) => {
     lineas.push(<div key={`sp-${metodo}`}>&nbsp;</div>);
     lineas.push(
       <div key={`get-${metodo}`} className="ml-4">
-        <span className="text-purple-400">@Get</span><span style={muted}>(&apos;{ruta}&apos;)</span>
+        <span className="text-purple-400">@Get</span>
+        <span style={muted}>(&apos;{ruta}&apos;)</span>
       </div>,
     );
     lineas.push(
       <div key={`sig-${metodo}`} className="ml-4">
-        <span style={accent}>{metodo}</span><span style={muted}>(): </span>
-        <span className="text-yellow-300">string</span><span style={muted}>{' {'}</span>
+        <span style={accent}>{metodo}</span>
+        <span style={muted}>(): </span>
+        <span className="text-yellow-300">string</span>
+        <span style={muted}>{' {'}</span>
       </div>,
     );
     lineas.push(
@@ -67,10 +83,18 @@ export default function VentanaContacto() {
         <span style={muted}>;</span>
       </div>,
     );
-    lineas.push(<div key={`end-${metodo}`} className="ml-4"><span style={muted}>{'}'}</span></div>);
+    lineas.push(
+      <div key={`end-${metodo}`} className="ml-4">
+        <span style={muted}>{'}'}</span>
+      </div>,
+    );
   });
 
-  lineas.push(<div key="close"><span style={muted}>{'}'}</span></div>);
+  lineas.push(
+    <div key="close">
+      <span style={muted}>{'}'}</span>
+    </div>,
+  );
 
   return (
     <div
@@ -90,12 +114,15 @@ export default function VentanaContacto() {
       </div>
       <div className="p-5 font-mono text-[13px] leading-6 overflow-x-auto">
         <div className="flex gap-4">
-          <div className="select-none text-right shrink-0" style={{ color: '#484f58' }}>
-            {lineas.map((_, i) => <div key={i}>{i + 1}</div>)}
+          <div
+            className="select-none text-right shrink-0"
+            style={{ color: '#484f58' }}
+          >
+            {lineas.map((_, i) => (
+              <div key={i}>{i + 1}</div>
+            ))}
           </div>
-          <div className="leading-6">
-            {lineas}
-          </div>
+          <div className="leading-6">{lineas}</div>
         </div>
       </div>
     </div>

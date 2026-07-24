@@ -1,6 +1,12 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react';
 import { motion, useInView } from 'framer-motion';
 import { gsap } from 'gsap';
 import { Github, Globe, Package, ArrowUpRight } from 'lucide-react';
@@ -30,7 +36,14 @@ const PROYECTOS: Proyecto[] = [
     titulo: 'Bodega Ecole — API de Gestión de Inventario',
     descripcion:
       'API REST en NestJS/TypeScript sobre MySQL (TypeORM) con autenticación JWT, roles y documentación Swagger. Pipeline CI/CD en GitHub Actions con enfoque DevSecOps (Gitleaks, Trivy, CodeQL y Dependabot en cada push) e imagen Docker endurecida (build multi-stage, usuario no-root). Despliegue en la nube: backend en Render, MySQL gestionada en Aiven (SSL) y frontend React en Vercel.',
-    etiquetas: ['NestJS', 'TypeScript', 'MySQL', 'Docker', 'GitHub Actions', 'React'],
+    etiquetas: [
+      'NestJS',
+      'TypeScript',
+      'MySQL',
+      'Docker',
+      'GitHub Actions',
+      'React',
+    ],
     enlaces: [
       { etiqueta: 'Demo', url: 'https://bodega-eco.vercel.app' },
       { etiqueta: 'API', url: 'https://bodega-eco.onrender.com/docs' },
@@ -42,8 +55,15 @@ const PROYECTOS: Proyecto[] = [
   {
     titulo: 'Calvary Santiago — Sitio Institucional',
     descripcion:
-      'Sitio web institucional para iglesia cristiana (en desarrollo). Next.js, React, TypeScript y Tailwind CSS con arquitectura MVC en el backend, diseño responsivo y despliegue en Hostinger.',
-    etiquetas: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'MVC', 'Hostinger'],
+      'Sitio web institucional para iglesia critiana. Next.js, React, TypeScript y Tailwind CSS con arquitectura MVC en el backend, diseño responsivo y despliegue en Hostinger.',
+    etiquetas: [
+      'Next.js',
+      'React',
+      'TypeScript',
+      'Tailwind CSS',
+      'MVC',
+      'Hostinger',
+    ],
     enlaces: [{ etiqueta: 'Web', url: 'https://calvarysantiago.cl/' }],
     icono: <Globe size={26} />,
     imagen: preview('https://calvarysantiago.cl/'),
@@ -51,8 +71,15 @@ const PROYECTOS: Proyecto[] = [
   {
     titulo: 'Marea Alta — Sitio Web Institucional',
     descripcion:
-      'Sitio web institucional para cliente real. Next.js, React, TypeScript y Tailwind CSS con arquitectura MVC en el backend, diseño responsivo y despliegue en Hostinger.',
-    etiquetas: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'MVC', 'Hostinger'],
+      'Sitio web institucional para cliente particular. Next.js, React, TypeScript y Tailwind CSS con arquitectura MVC en el backend, diseño responsivo y despliegue en Hostinger.',
+    etiquetas: [
+      'Next.js',
+      'React',
+      'TypeScript',
+      'Tailwind CSS',
+      'MVC',
+      'Hostinger',
+    ],
     enlaces: [],
     icono: <Globe size={26} />,
   },
@@ -60,15 +87,15 @@ const PROYECTOS: Proyecto[] = [
 
 export default function SeccionProyectos({ bg }: { bg: string }) {
   const refSeccion = useRef<HTMLDivElement>(null);
-  const enVista    = useInView(refSeccion, { once: true, margin: '-80px' });
+  const enVista = useInView(refSeccion, { once: true, margin: '-80px' });
 
   // --- Refs de la mecánica "Magic Area" -------------------------------------
-  const contenedorRef = useRef<HTMLDivElement>(null);   // ancla relativa
-  const magicRef      = useRef<HTMLDivElement>(null);    // recuadro que se desliza
-  const tarjetasRef   = useRef<(HTMLDivElement | null)[]>([]);
+  const contenedorRef = useRef<HTMLDivElement>(null); // ancla relativa
+  const magicRef = useRef<HTMLDivElement>(null); // recuadro que se desliza
+  const tarjetasRef = useRef<(HTMLDivElement | null)[]>([]);
 
   // Timeouts compartidos (delay de hover 100ms / restauración 400ms)
-  const hoverTimeout   = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Índice del proyecto "originalmente activo" (al que se vuelve al salir)
@@ -81,18 +108,21 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
    */
   function moveMagicArea(indice: number, instant = false) {
     const contenedor = contenedorRef.current;
-    const magic      = magicRef.current;
-    const tarjeta    = tarjetasRef.current[indice];
+    const magic = magicRef.current;
+    const tarjeta = tarjetasRef.current[indice];
     if (!contenedor || !magic || !tarjeta) return;
 
-    const cRect = contenedor.getBoundingClientRect();
-    const rect  = tarjeta.getBoundingClientRect();
-
+    // Geometría de LAYOUT (offset*), no visual: es inmune al transform:scale del
+    // contenedor de proyectos. getBoundingClientRect devolvería medidas ya
+    // escaladas que, aplicadas al resaltado que vive dentro del mismo contexto
+    // escalado, lo encogen y lo dejan corto antes de la miniatura. offsetParent
+    // de cada tarjeta es `contenedor` (position: relative), igual que la magic-
+    // area, así que las coordenadas coinciden.
     const props = {
-      x: rect.left - cRect.left,
-      y: rect.top - cRect.top,
-      width: rect.width,
-      height: rect.height,
+      x: tarjeta.offsetLeft,
+      y: tarjeta.offsetTop,
+      width: tarjeta.offsetWidth,
+      height: tarjeta.offsetHeight,
     };
 
     if (instant) {
@@ -114,7 +144,6 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
     if (magicRef.current) {
       gsap.set(magicRef.current, { opacity: 1 }); // evita el "salto" inicial
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -125,7 +154,6 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
       if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
       if (wrapperTimeout.current) clearTimeout(wrapperTimeout.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activo]);
 
   // --- Handlers de hover ----------------------------------------------------
@@ -142,13 +170,25 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
     if (wrapperTimeout.current) clearTimeout(wrapperTimeout.current);
 
     wrapperTimeout.current = setTimeout(() => {
-      if (originalActive.current !== activo) setActiveItem(originalActive.current);
+      if (originalActive.current !== activo)
+        setActiveItem(originalActive.current);
     }, 400);
   }
 
   return (
     <section id="projects" className="py-24" style={{ background: bg }}>
-      <div className="max-w-3xl mx-auto px-6">
+      {/* Escala del contenedor de proyectos (mismo patrón que ContactPanel).
+          1 = tamaño normal. Baja --cell-scale para achicar todo el bloque. */}
+      <div
+        className="max-w-3xl mx-auto px-6"
+        style={
+          {
+            '--cell-scale': 0.8,
+            transform: 'scale(var(--cell-scale))',
+            transformOrigin: 'top center',
+          } as CSSProperties
+        }
+      >
         {/* Encabezado */}
         <motion.div
           ref={refSeccion}
@@ -156,8 +196,7 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
           animate={enVista ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.4 }}
           className="mb-12"
-        >
-        </motion.div>
+        ></motion.div>
 
         {/* Contenedor relativo: ancla de la magic-area */}
         <div
@@ -200,22 +239,33 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
           {PROYECTOS.map((proyecto, indice) => (
             <div
               key={proyecto.titulo}
-              ref={el => { tarjetasRef.current[indice] = el; }}
+              ref={(el) => {
+                tarjetasRef.current[indice] = el;
+              }}
               onMouseEnter={() => handleEnter(indice)}
-              onClick={() => { originalActive.current = indice; setActiveItem(indice); }}
+              onClick={() => {
+                originalActive.current = indice;
+                setActiveItem(indice);
+              }}
               className="relative z-[1] flex items-center justify-between gap-5 p-5"
               style={{ color: 'var(--theme-fg)' }}
             >
               {/* Izquierda: título + descripción + etiquetas + enlaces */}
               <div className="min-w-0">
-                <h3 className="text-lg font-semibold mb-1.5" style={{ color: 'var(--theme-fg)' }}>
+                <h3
+                  className="text-lg font-semibold mb-1.5"
+                  style={{ color: 'var(--theme-fg)' }}
+                >
                   {proyecto.titulo}
                 </h3>
-                <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--theme-fg-muted)' }}>
+                <p
+                  className="text-sm leading-relaxed mb-3"
+                  style={{ color: 'var(--theme-fg-muted)' }}
+                >
                   {proyecto.descripcion}
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-3">
-                  {proyecto.etiquetas.map(etiqueta => (
+                  {proyecto.etiquetas.map((etiqueta) => (
                     <span
                       key={etiqueta}
                       className="text-[11px] px-2 py-0.5 rounded-sm"
@@ -233,17 +283,23 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
                 {/* Enlaces del proyecto (Demo / API / GitHub / Web) */}
                 {proyecto.enlaces.length > 0 && (
                   <div className="flex flex-wrap gap-x-3 gap-y-1.5">
-                    {proyecto.enlaces.map(enlace => (
+                    {proyecto.enlaces.map((enlace) => (
                       <a
                         key={enlace.url}
                         href={enlace.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={e => e.stopPropagation()}
+                        onClick={(e) => e.stopPropagation()}
                         className="inline-flex items-center gap-1 text-xs font-medium transition-colors"
                         style={{ color: 'var(--theme-accent)' }}
-                        onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg)')}
-                        onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-accent)')}
+                        onMouseEnter={(e) =>
+                          ((e.currentTarget as HTMLElement).style.color =
+                            'var(--theme-fg)')
+                        }
+                        onMouseLeave={(e) =>
+                          ((e.currentTarget as HTMLElement).style.color =
+                            'var(--theme-accent)')
+                        }
                       >
                         {enlace.etiqueta}
                         <ArrowUpRight size={13} />
@@ -254,7 +310,11 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
               </div>
 
               {/* Derecha: vista previa del sitio (o icono de respaldo) */}
-              <Miniatura activa={activo === indice} imagen={proyecto.imagen} alt={proyecto.titulo}>
+              <Miniatura
+                activa={activo === indice}
+                imagen={proyecto.imagen}
+                alt={proyecto.titulo}
+              >
                 {proyecto.icono}
               </Miniatura>
             </div>
@@ -269,8 +329,14 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-sm transition-colors"
             style={{ color: 'var(--theme-fg-muted)' }}
-            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-accent)')}
-            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg-muted)')}
+            onMouseEnter={(e) =>
+              ((e.currentTarget as HTMLElement).style.color =
+                'var(--theme-accent)')
+            }
+            onMouseLeave={(e) =>
+              ((e.currentTarget as HTMLElement).style.color =
+                'var(--theme-fg-muted)')
+            }
           >
             <Github size={16} />
             Ver más en GitHub

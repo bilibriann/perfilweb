@@ -4,6 +4,8 @@
 
 /* ─── CSS Variables — midnight defaults (sobrescritos por ThemeProvider) ─── */
 :root {
+  /* Scrollbars (y demás UI nativa) usan el esquema oscuro del navegador. */
+  color-scheme: dark;
   --theme-bg:           #0b0f18;
   --theme-surface:      rgba(11, 15, 24, 0.75);
   --theme-panel:        rgba(14, 18, 28, 0.82);
