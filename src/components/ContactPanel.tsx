@@ -11,7 +11,7 @@ import gsap from 'gsap';
 import { Github, Linkedin, Mail, X, ArrowRight } from 'lucide-react';
 
 const NAME = 'Brian Vilches Mella';
-const ROLE = 'Full Desarrollador Web | Programación y Análisis de sistemas.';
+const ROLE = 'Desarrollador Web | Programación y Análisis de sistemas.';
 const DESCRIPCION =
   'Programador orientado al desarrollo backend APIs y lógica de negocio, con conocimientos en bases de datos y programación orientada a objetos. Interesado en integrarme a equipos de desarrollo y participar en proyectos reales. Experiencia previa como Ingeniero Constructor en empresas de construcción, desarrollando competencias en planificación, organización y trabajo en equipo.';
 const STACK = [
