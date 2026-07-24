@@ -3,11 +3,8 @@
 import { Github, Linkedin, Mail } from 'lucide-react';
 
 const ENLACES_NAV = [
-  { etiqueta: 'About',      enlace: '#about' },
-  { etiqueta: 'Stack',      enlace: '#stack' },
-  { etiqueta: 'Projects',   enlace: '#projects' },
-  { etiqueta: 'Experience', enlace: '#experience' },
-  { etiqueta: 'Contact',    enlace: '#contact' },
+  { etiqueta: 'Projects', enlace: '#projects' },
+  { etiqueta: 'Contact',  enlace: '#contact' },
 ];
 
 const REDES_SOCIALES = [
@@ -63,14 +60,11 @@ export default function PieDePagina({ bg }: { bg: string }) {
         </div>
 
         <div
-          className="mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
+          className="mt-10 pt-6 flex justify-center"
           style={{ borderTop: '1px solid var(--theme-border)' }}
         >
           <p className="text-xs font-mono" style={{ color: 'var(--theme-fg-dim)' }}>
-            © {anio} Brian Vilches Portfolio. Todos los derechos reservados.
-          </p>
-          <p className="text-xs font-mono" style={{ color: 'var(--theme-fg-dim)' }}>
-            Next.js · Tailwind CSS
+            © {anio} Brian Vilches Portfolio.
           </p>
         </div>
       </div>

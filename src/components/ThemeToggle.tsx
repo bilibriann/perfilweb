@@ -46,7 +46,7 @@ export default function ThemeToggle() {
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
-            {themes.map(t => {
+            {themes.filter(t => !t.hidden).map(t => {
               const isActive = theme.id === t.id
               return (
                 <button

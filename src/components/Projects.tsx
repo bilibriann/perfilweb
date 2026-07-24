@@ -1,43 +1,155 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Github, Globe, Package } from 'lucide-react';
+import { gsap } from 'gsap';
+import { Github, Globe, Package, ArrowUpRight } from 'lucide-react';
+
+interface Enlace {
+  etiqueta: string;
+  url: string;
+}
 
 interface Proyecto {
   titulo: string;
   descripcion: string;
   etiquetas: string[];
-  repositorio: string;
+  enlaces: Enlace[];
   icono: React.ReactNode;
+  /** Vista previa del sitio (screenshot vía mShots). Si falta, se usa el icono. */
+  imagen?: string;
+}
+
+/** Screenshot en vivo del sitio mediante el servicio mShots de WordPress. */
+function preview(url: string): string {
+  return `https://s.wordpress.com/mshots/v1/${encodeURIComponent(url)}?w=320&h=200`;
 }
 
 const PROYECTOS: Proyecto[] = [
   {
-    titulo: 'Bodega Ecole — Gestión de Inventario',
+    titulo: 'Bodega Ecole — API de Gestión de Inventario',
     descripcion:
-      'API REST para gestión de inventario (productos, lotes y movimientos) con autenticación JWT. NestJS 11 + MySQL/TypeORM + Flyway, documentación Swagger y entorno completo con Docker Compose. Incluye CRUD, trazabilidad de stock y creación automática de admin desde variables de entorno.',
-    etiquetas: ['NestJS', 'TypeScript', 'MySQL', 'TypeORM', 'Flyway', 'JWT', 'Docker', 'Swagger'],
-    repositorio: 'https://github.com/bilibriann',
-    icono: <Package size={18} />,
+      'API REST en NestJS/TypeScript sobre MySQL (TypeORM) con autenticación JWT, roles y documentación Swagger. Pipeline CI/CD en GitHub Actions con enfoque DevSecOps (Gitleaks, Trivy, CodeQL y Dependabot en cada push) e imagen Docker endurecida (build multi-stage, usuario no-root). Despliegue en la nube: backend en Render, MySQL gestionada en Aiven (SSL) y frontend React en Vercel.',
+    etiquetas: ['NestJS', 'TypeScript', 'MySQL', 'Docker', 'GitHub Actions', 'React'],
+    enlaces: [
+      { etiqueta: 'Demo', url: 'https://bodega-eco.vercel.app' },
+      { etiqueta: 'API', url: 'https://bodega-eco.onrender.com/docs' },
+      { etiqueta: 'GitHub', url: 'https://github.com/bilibriann/bodega-ecole' },
+    ],
+    icono: <Package size={26} />,
+    imagen: preview('https://bodega-eco.vercel.app'),
   },
   {
     titulo: 'Calvary Santiago — Sitio Institucional',
     descripcion:
-      'Sitio web institucional para iglesia cristiana (en desarrollo). Desarrollado con Next.js, React, TypeScript y Tailwind CSS, utilizando arquitectura MVC en el backend. Incluye diseño responsivo, validación de formularios, accesibilidad, seguridad HTTP y despliegue en Hostinger.',
+      'Sitio web institucional para iglesia cristiana (en desarrollo). Next.js, React, TypeScript y Tailwind CSS con arquitectura MVC en el backend, diseño responsivo y despliegue en Hostinger.',
     etiquetas: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'MVC', 'Hostinger'],
-    repositorio: 'https://github.com/bilibriann',
-    icono: <Globe size={18} />,
+    enlaces: [{ etiqueta: 'Web', url: 'https://calvarysantiago.cl/' }],
+    icono: <Globe size={26} />,
+    imagen: preview('https://calvarysantiago.cl/'),
+  },
+  {
+    titulo: 'Marea Alta — Sitio Web Institucional',
+    descripcion:
+      'Sitio web institucional para cliente real. Next.js, React, TypeScript y Tailwind CSS con arquitectura MVC en el backend, diseño responsivo y despliegue en Hostinger.',
+    etiquetas: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'MVC', 'Hostinger'],
+    enlaces: [],
+    icono: <Globe size={26} />,
   },
 ];
 
 export default function SeccionProyectos({ bg }: { bg: string }) {
-  const refSeccion = useRef(null);
+  const refSeccion = useRef<HTMLDivElement>(null);
   const enVista    = useInView(refSeccion, { once: true, margin: '-80px' });
+
+  // --- Refs de la mecánica "Magic Area" -------------------------------------
+  const contenedorRef = useRef<HTMLDivElement>(null);   // ancla relativa
+  const magicRef      = useRef<HTMLDivElement>(null);    // recuadro que se desliza
+  const tarjetasRef   = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Timeouts compartidos (delay de hover 100ms / restauración 400ms)
+  const hoverTimeout   = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapperTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Índice del proyecto "originalmente activo" (al que se vuelve al salir)
+  const originalActive = useRef(0);
+  const [activo, setActivo] = useState(0);
+
+  /**
+   * Desliza la magic-area (y su barra) hasta la tarjeta indicada.
+   * Calcula coordenadas relativas al contenedor (position:relative).
+   */
+  function moveMagicArea(indice: number, instant = false) {
+    const contenedor = contenedorRef.current;
+    const magic      = magicRef.current;
+    const tarjeta    = tarjetasRef.current[indice];
+    if (!contenedor || !magic || !tarjeta) return;
+
+    const cRect = contenedor.getBoundingClientRect();
+    const rect  = tarjeta.getBoundingClientRect();
+
+    const props = {
+      x: rect.left - cRect.left,
+      y: rect.top - cRect.top,
+      width: rect.width,
+      height: rect.height,
+    };
+
+    if (instant) {
+      gsap.set(magic, props);
+    } else {
+      gsap.to(magic, { ...props, duration: 0.35, ease: 'power3.out' });
+    }
+  }
+
+  /** Marca una tarjeta como activa y mueve la magic-area hacia ella. */
+  function setActiveItem(indice: number) {
+    setActivo(indice);
+    moveMagicArea(indice);
+  }
+
+  // --- Posicionamiento inicial + reposición en resize -----------------------
+  useLayoutEffect(() => {
+    moveMagicArea(originalActive.current, true);
+    if (magicRef.current) {
+      gsap.set(magicRef.current, { opacity: 1 }); // evita el "salto" inicial
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const onResize = () => moveMagicArea(activo, true);
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+      if (wrapperTimeout.current) clearTimeout(wrapperTimeout.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activo]);
+
+  // --- Handlers de hover ----------------------------------------------------
+  function handleEnter(indice: number) {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    if (wrapperTimeout.current) clearTimeout(wrapperTimeout.current);
+    if (indice === activo) return;
+
+    hoverTimeout.current = setTimeout(() => setActiveItem(indice), 100);
+  }
+
+  function handleLeaveContenedor() {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    if (wrapperTimeout.current) clearTimeout(wrapperTimeout.current);
+
+    wrapperTimeout.current = setTimeout(() => {
+      if (originalActive.current !== activo) setActiveItem(originalActive.current);
+    }, 400);
+  }
 
   return (
     <section id="projects" className="py-24" style={{ background: bg }}>
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-3xl mx-auto px-6">
+        {/* Encabezado */}
         <motion.div
           ref={refSeccion}
           initial={{ opacity: 0, y: 16 }}
@@ -45,103 +157,177 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
           transition={{ duration: 0.4 }}
           className="mb-12"
         >
-          <h2 className="text-3xl font-bold mb-3" style={{ color: 'var(--theme-fg)' }}>
-            Proyectos
-          </h2>
-          <div className="h-0.5 w-10" style={{ background: 'var(--theme-accent)' }} />
-          <p className="mt-4 text-sm max-w-lg" style={{ color: 'var(--theme-fg-muted)' }}>
-            Proyectos de backend enfocados en APIs REST, autenticación,
-            microservicios y bases de datos.
-          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          {PROYECTOS.map((proyecto, indice) => (
-            <TarjetaProyecto
-              key={proyecto.titulo}
-              proyecto={proyecto}
-              indice={indice}
-              enVista={enVista}
+        {/* Contenedor relativo: ancla de la magic-area */}
+        <div
+          ref={contenedorRef}
+          className="relative"
+          onMouseLeave={handleLeaveContenedor}
+        >
+          {/* Magic Area: recuadro único que se desliza tras la tarjeta activa */}
+          <div
+            ref={magicRef}
+            aria-hidden
+            className="pointer-events-none absolute top-0 left-0"
+            style={{
+              width: 0,
+              height: 0,
+              opacity: 0,
+              borderRadius: 4,
+              background: 'rgba(var(--theme-accent-rgb), 0.10)',
+              border: '1px solid rgba(var(--theme-accent-rgb), 0.25)',
+              zIndex: 0,
+            }}
+          >
+            {/* Barra de acento a la izquierda (viaja con la magic-area) */}
+            <span
+              aria-hidden
+              style={{
+                position: 'absolute',
+                left: -3,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: 6,
+                height: '70%',
+                borderRadius: 2,
+                background: 'var(--theme-accent)',
+              }}
             />
+          </div>
+
+          {/* Tarjetas de proyecto */}
+          {PROYECTOS.map((proyecto, indice) => (
+            <div
+              key={proyecto.titulo}
+              ref={el => { tarjetasRef.current[indice] = el; }}
+              onMouseEnter={() => handleEnter(indice)}
+              onClick={() => { originalActive.current = indice; setActiveItem(indice); }}
+              className="relative z-[1] flex items-center justify-between gap-5 p-5"
+              style={{ color: 'var(--theme-fg)' }}
+            >
+              {/* Izquierda: título + descripción + etiquetas + enlaces */}
+              <div className="min-w-0">
+                <h3 className="text-lg font-semibold mb-1.5" style={{ color: 'var(--theme-fg)' }}>
+                  {proyecto.titulo}
+                </h3>
+                <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--theme-fg-muted)' }}>
+                  {proyecto.descripcion}
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {proyecto.etiquetas.map(etiqueta => (
+                    <span
+                      key={etiqueta}
+                      className="text-[11px] px-2 py-0.5 rounded-sm"
+                      style={{
+                        color: 'var(--theme-fg-dim)',
+                        border: '1px solid var(--theme-border)',
+                        background: 'var(--theme-bg-alt)',
+                      }}
+                    >
+                      {etiqueta}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Enlaces del proyecto (Demo / API / GitHub / Web) */}
+                {proyecto.enlaces.length > 0 && (
+                  <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                    {proyecto.enlaces.map(enlace => (
+                      <a
+                        key={enlace.url}
+                        href={enlace.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 text-xs font-medium transition-colors"
+                        style={{ color: 'var(--theme-accent)' }}
+                        onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg)')}
+                        onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-accent)')}
+                      >
+                        {enlace.etiqueta}
+                        <ArrowUpRight size={13} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Derecha: vista previa del sitio (o icono de respaldo) */}
+              <Miniatura activa={activo === indice} imagen={proyecto.imagen} alt={proyecto.titulo}>
+                {proyecto.icono}
+              </Miniatura>
+            </div>
           ))}
+        </div>
+
+        {/* Pie con enlace a GitHub */}
+        <div className="mt-10 flex justify-center">
+          <a
+            href="https://github.com/bilibriann"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm transition-colors"
+            style={{ color: 'var(--theme-fg-muted)' }}
+            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-accent)')}
+            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg-muted)')}
+          >
+            <Github size={16} />
+            Ver más en GitHub
+            <ArrowUpRight size={14} />
+          </a>
         </div>
       </div>
     </section>
   );
 }
 
-function TarjetaProyecto({
-  proyecto,
-  indice,
-  enVista,
+/**
+ * Miniatura rectangular (160×100) a la derecha de cada tarjeta.
+ * Pasa de tono apagado (grayscale del diseño original) a color de acento
+ * cuando su tarjeta está activa.
+ */
+function Miniatura({
+  activa,
+  imagen,
+  alt,
+  children,
 }: {
-  proyecto: Proyecto;
-  indice: number;
-  enVista: boolean;
+  activa: boolean;
+  imagen?: string;
+  alt?: string;
+  children: React.ReactNode;
 }) {
+  const [error, setError] = useState(false);
+  const mostrarImagen = Boolean(imagen) && !error;
+
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 16 }}
-      animate={enVista ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.4, delay: indice * 0.08 }}
-      className="p-6 transition-colors"
-      style={{ border: '1px solid var(--theme-border)', background: 'var(--theme-panel)' }}
-      onMouseEnter={e =>
-        ((e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border-hover)')
-      }
-      onMouseLeave={e =>
-        ((e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border)')
-      }
+    <div
+      className="shrink-0 flex items-center justify-center overflow-hidden transition-all duration-300"
+      style={{
+        width: 160,
+        height: 100,
+        borderRadius: 2,
+        border: '1px solid var(--theme-border)',
+        background: 'var(--theme-bg-alt)',
+        color: activa ? 'var(--theme-accent)' : 'var(--theme-fg-dim)',
+        filter: activa ? 'grayscale(0%)' : 'grayscale(100%)',
+        opacity: activa ? 1 : 0.7,
+      }}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-8 h-8 flex items-center justify-center"
-            style={{
-              border: '1px solid var(--theme-border)',
-              background: 'var(--theme-bg-alt)',
-              color: 'var(--theme-accent)',
-            }}
-          >
-            {proyecto.icono}
-          </div>
-          <h3 className="font-semibold text-base" style={{ color: 'var(--theme-fg)' }}>
-            {proyecto.titulo}
-          </h3>
-        </div>
-        <a
-          href={proyecto.repositorio}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-2 shrink-0 transition-colors"
-          style={{ color: 'var(--theme-fg-dim)' }}
-          aria-label="GitHub"
-          onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg)')}
-          onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg-dim)')}
-        >
-          <Github size={16} />
-        </a>
-      </div>
-
-      <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--theme-fg-muted)' }}>
-        {proyecto.descripcion}
-      </p>
-
-      <div className="flex flex-wrap gap-1.5">
-        {proyecto.etiquetas.map((etiqueta) => (
-          <span
-            key={etiqueta}
-            className="px-2 py-0.5 text-[11px] font-mono"
-            style={{
-              color: 'var(--theme-fg-muted)',
-              background: 'var(--theme-bg-alt)',
-              border: '1px solid var(--theme-border)',
-            }}
-          >
-            {etiqueta}
-          </span>
-        ))}
-      </div>
-    </motion.article>
+      {mostrarImagen ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={imagen}
+          alt={alt ?? ''}
+          loading="lazy"
+          draggable={false}
+          onError={() => setError(true)}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      ) : (
+        children
+      )}
+    </div>
   );
 }

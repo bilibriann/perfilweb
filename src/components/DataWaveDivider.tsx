@@ -135,7 +135,7 @@ export default function DataWaveDivider() {
   return (
     <div
       ref={containerRef}
-      style={{ width: '100%', height: '180px', position: 'relative', flexShrink: 0 }}
+      style={{ width: '100%', height: '180px', position: 'relative', flexShrink: 0, background: 'var(--theme-surface)' }}
     >
       <canvas
         ref={canvasRef}

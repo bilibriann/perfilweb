@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Inter, JetBrains_Mono, Orbitron } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/themes/ThemeContext'
 import ThemeToggle from '@/components/ThemeToggle'
@@ -15,6 +15,11 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
 })
 
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  variable: '--font-orbitron',
+})
+
 export const metadata: Metadata = {
   title: 'Backend Developer | Portfolio',
   description:
@@ -24,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html lang="es" className={`${inter.variable} ${jetbrainsMono.variable} ${orbitron.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ThemeProvider>
           <BackgroundRenderer />

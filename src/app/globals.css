@@ -19,6 +19,9 @@
   --theme-accent-on:    #0d1117;
   --theme-glow-1:       rgba(56, 100, 255, 0.18);
   --theme-glow-2:       rgba(99, 102, 241, 0.10);
+  --bg-effect-color:    rgba(96, 165, 250, 0.65);
+  --bg-effect-intensity: 0.75;
+  --bg-effect-size:     0.9;
 }
 
 /* ─── Base ──────────────────────────────────────────────────────────────── */
@@ -70,6 +73,13 @@ body {
   100% { top: 100vh; opacity: 0; }
 }
 
+@keyframes hud-scan {
+  0%   { top: -2%;  opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: 102%; opacity: 0; }
+}
+
 @keyframes neon-pulse {
   0%, 100% { opacity: 0.45; }
   50%       { opacity: 0.90; }
@@ -78,13 +88,6 @@ body {
 @keyframes retro-grid-shift {
   0%   { background-position: 0 0; }
   100% { background-position: 0 -48px; }
-}
-
-@keyframes ocean-wave {
-  0%   { transform: translateX(-50%) scale(1,   1); }
-  33%  { transform: translateX(-52%) scale(1.03, 0.97); }
-  66%  { transform: translateX(-48%) scale(0.97, 1.03); }
-  100% { transform: translateX(-50%) scale(1,   1); }
 }
 
 @keyframes float-up-1 {
@@ -104,6 +107,205 @@ body {
 @keyframes shimmer-rotate {
   0%   { transform: translate(-50%, -50%) rotate(0deg); }
   100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes deathstar-drift {
+  0%, 100% { transform: translate(0, 0) rotate(-6deg); }
+  50%       { transform: translate(-1.5%, 1%) rotate(-4deg); }
+}
+
+/* ─── TIE Flyby — patrullas cruzando en diagonal (Hero) ────────────────── */
+/* Cruce arriba-izq → abajo-der; el tramo visible ocurre en el primer ~45%
+   de la animación y luego la nave queda fuera de pantalla (hueco entre
+   pasadas → sensación ocasional). */
+@keyframes tie-flyby {
+  0%   { transform: translate3d(-30vw, -35vh, 0); opacity: 0; }
+  5%   { opacity: var(--tie-opacity, 0.6); }
+  38%  { opacity: var(--tie-opacity, 0.6); }
+  45%  { transform: translate3d(125vw, 120vh, 0); opacity: 0; }
+  100% { transform: translate3d(125vw, 120vh, 0); opacity: 0; }
+}
+
+.tie-flyby-ship {
+  animation-name: tie-flyby;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tie-flyby-ship { animation: none; opacity: 0; }
+}
+
+/* ─── Scroll-to-Type Effect ────────────────────────────────────────────── */
+@property --idx {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+@property --alpha {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+@property --scrub {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+@property --velocity {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+:root {
+  animation: st-blink 0.8s infinite;
+}
+
+.scroll-type-h {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-weight: 300;
+  color: var(--theme-fg);
+  position: relative;
+  margin: 0;
+}
+
+.scroll-type-span {
+  --st-pos: min(var(--idx), calc(var(--text-length) - 1));
+  white-space: break-spaces;
+  /* Texto no revelado: invisible */
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  /* Revelar texto hacia la izquierda con background-clip: text */
+  background: linear-gradient(var(--st-color, var(--theme-fg, #e2e8f0)) 0 0) 0 0 /
+    calc(var(--st-pos) * 1ch) 100% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  position: relative;
+}
+
+/* Cursor parpadeante como pseudo-elemento, separado del text-clip */
+.scroll-type-span::before {
+  content: '';
+  position: absolute;
+  top: 0.08em;
+  left: calc(var(--st-pos) * 1ch);
+  width: 0.55ch;
+  height: 0.85em;
+  background: rgb(var(--theme-accent-rgb));
+  opacity: calc(var(--alpha) + var(--velocity));
+  pointer-events: none;
+}
+
+/* Cursor apagado al terminar la escritura */
+.scroll-type-done .scroll-type-span::before {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+
+@keyframes st-blink {
+  50% { --alpha: 1; }
+}
+@keyframes st-index {
+  to {
+    --idx: var(--text-length);
+    --scrub: var(--text-length);
+  }
+}
+
+/* ─── Burger de sables de luz (Star Wars) ──────────────────────────────── */
+/* Convertido del SCSS de referencia: %burgersection duplicado en .bun/.filling */
+
+.burger {
+  cursor: pointer;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  background: transparent;
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* %burgersection */
+.burger .bun,
+.burger .filling {
+  display: block;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  height: 10%;
+  width: 70%;
+  transform-origin: 50% 50%;
+  transition: top 0.4s ease 0.4s, transform 0.4s ease 0.4s;
+}
+
+.burger .bun::before,
+.burger .bun::after,
+.burger .filling::before,
+.burger .filling::after {
+  content: "";
+  display: block;
+  height: 40%;
+  background: white;
+  position: absolute;
+  top: 50%;
+  transform: translate(0%, -45%);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.burger .bun::before,
+.burger .filling::before {
+  left: 0;
+  width: calc(-1px + 75%);
+  border-radius: 10px 0 0 10px;
+}
+
+.burger .bun::after,
+.burger .filling::after {
+  right: 0;
+  width: calc(-1px + 25%);
+}
+
+.burger .bun.top    { top: 25%; }
+.burger .bun.bottom { top: 75%; }
+
+.burger .filling {
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(180deg);
+  animation: green-ls-out 0.8s ease forwards;
+}
+
+/* Hover: las líneas brillan como sables de luz */
+.burger:hover .bun.top::before    { background: #FEE; box-shadow: #F00 0 0 10px 1px; }
+.burger:hover .bun.bottom::before { background: #DFF; box-shadow: #0FF 0 0 10px 1px; }
+.burger:hover .filling::before    { background: #EFE; box-shadow: #0F0 0 0 10px 1px; }
+
+/* Activo: las buns forman una X y el sable verde sale deslizándose */
+.burger.active .bun {
+  border-radius: 3px;
+  top: 50%;
+  transition: top 0.4s ease, transform 0.4s ease;
+}
+.burger.active .bun.top    { transform: translate(-50%, -50%) rotate(-225deg); }
+.burger.active .bun.bottom { transform: translate(-50%, -50%) rotate(405deg); }
+.burger.active .filling {
+  transform: translate(-50%, -50%) rotate(-90deg);
+  animation: green-ls-in 0.8s ease forwards;
+}
+
+@keyframes green-ls-in {
+  0%   { transform: translate(-50%, -50%) rotate(180deg); }
+  50%  { transform: translate(-50%, -50%) rotate(-90deg); }
+  100% { transform: translate(-50%, -50%) rotate(-90deg) translate(200%, 0%); }
+}
+@keyframes green-ls-out {
+  0%   { transform: translate(-50%, -200%) rotate(-90deg); }
+  50%  { transform: translate(-50%, -50%) rotate(-90deg); }
+  100% { transform: translate(-50%, -50%) rotate(180deg); }
 }
 
 /* ─── Canvas background (legacy — kept for compatibility) ───────────────── */

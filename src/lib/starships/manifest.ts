@@ -1,0 +1,65 @@
+// GENERADO automáticamente por scripts/gen-ship-manifest.mjs — no editar a mano.
+// Cada entrada corresponde a un archivo .jpg en public/ship.
+
+export interface ArchivoNave {
+  /** Nombre del archivo dentro de public/ship, p. ej. "A-wing.jpg". */
+  archivo: string;
+  /** Nombre de la nave (título del archivo sin extensión). */
+  nombre: string;
+}
+
+export const NAVES_LOCALES: ArchivoNave[] = [
+  { archivo: "A-wing.jpg", nombre: "A-wing" },
+  { archivo: "Arc-170.jpg", nombre: "Arc-170" },
+  { archivo: "B-wing.jpg", nombre: "B-wing" },
+  { archivo: "Belbullab-22.jpg", nombre: "Belbullab-22" },
+  { archivo: "caza.jpg", nombre: "caza" },
+  { archivo: "cazadarkvader.jpg", nombre: "cazadarkvader" },
+  { archivo: "Chimaera.jpg", nombre: "Chimaera" },
+  { archivo: "Delta-7 Aethersprite.jpg", nombre: "Delta-7 Aethersprite" },
+  { archivo: "Devastator.jpg", nombre: "Devastator" },
+  { archivo: "Droid Tri-Fighter.jpg", nombre: "Droid Tri-Fighter" },
+  { archivo: "Ebon Hawk.jpg", nombre: "Ebon Hawk" },
+  { archivo: "Eta2 - Interceptor.jpg", nombre: "Eta2 - Interceptor" },
+  { archivo: "Executor.jpg", nombre: "Executor" },
+  { archivo: "Fang Fighter.jpg", nombre: "Fang Fighter" },
+  { archivo: "Finalizer.jpg", nombre: "Finalizer" },
+  { archivo: "Gauntlet Fighter.jpg", nombre: "Gauntlet Fighter" },
+  { archivo: "Ghost.jpg", nombre: "Ghost" },
+  { archivo: "Hyena Bomber.jpg", nombre: "Hyena Bomber" },
+  { archivo: "Invisible Hand.jpg", nombre: "Invisible Hand" },
+  { archivo: "Malevolence.jpg", nombre: "Malevolence" },
+  { archivo: "Millennium Falcon.jpg", nombre: "Millennium Falcon" },
+  { archivo: "N-1 Naboo Starfighter.jpg", nombre: "N-1 Naboo Starfighter" },
+  { archivo: "Naboo Royal Starship.jpg", nombre: "Naboo Royal Starship" },
+  { archivo: "Outrider.jpg", nombre: "Outrider" },
+  { archivo: "Profundity.jpg", nombre: "Profundity" },
+  { archivo: "Raven's Claw.jpg", nombre: "Raven's Claw" },
+  { archivo: "Razor Crest.jpg", nombre: "Razor Crest" },
+  { archivo: "Resistance X-wing.jpg", nombre: "Resistance X-wing" },
+  { archivo: "Resistance Y-wing.jpg", nombre: "Resistance Y-wing" },
+  { archivo: "Rogue-class Starfighter.jpg", nombre: "Rogue-class Starfighter" },
+  { archivo: "RZ-1 A-wing.jpg", nombre: "RZ-1 A-wing" },
+  { archivo: "Slave I.jpg", nombre: "Slave I" },
+  { archivo: "Stinger Mantis.jpg", nombre: "Stinger Mantis" },
+  { archivo: "Supremacy.jpg", nombre: "Supremacy" },
+  { archivo: "Tantive IV.jpg", nombre: "Tantive IV" },
+  { archivo: "TIE Advanced v1.jpg", nombre: "TIE Advanced v1" },
+  { archivo: "TIE Advanced x1.jpg", nombre: "TIE Advanced x1" },
+  { archivo: "TIE Aggressor.jpg", nombre: "TIE Aggressor" },
+  { archivo: "TIE Avenger.jpg", nombre: "TIE Avenger" },
+  { archivo: "TIE Bomber.jpg", nombre: "TIE Bomber" },
+  { archivo: "TIE Brute.jpg", nombre: "TIE Brute" },
+  { archivo: "TIE Dagger.jpg", nombre: "TIE Dagger" },
+  { archivo: "TIE Defender.jpg", nombre: "TIE Defender" },
+  { archivo: "TIE Interceptor.jpg", nombre: "TIE Interceptor" },
+  { archivo: "TIE Phantom.jpg", nombre: "TIE Phantom" },
+  { archivo: "TIE Reaper.jpg", nombre: "TIE Reaper" },
+  { archivo: "TIE Silencer.jpg", nombre: "TIE Silencer" },
+  { archivo: "TIE Striker.jpg", nombre: "TIE Striker" },
+  { archivo: "TIE Whisper.jpg", nombre: "TIE Whisper" },
+  { archivo: "U-wing.jpg", nombre: "U-wing" },
+  { archivo: "Vulture Droid.jpg", nombre: "Vulture Droid" },
+  { archivo: "Y-wing.jpg", nombre: "Y-wing" },
+  { archivo: "Z-95 Headhunter.jpg", nombre: "Z-95 Headhunter" },
+];

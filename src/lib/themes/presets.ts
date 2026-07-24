@@ -51,12 +51,6 @@ export const PRESETS: ThemePreset[] = [
     bgPattern: 'synapse',
   },
   {
-    id: 'retrowave',
-    label: 'Retrowave',
-    colors: { bg: '#1a1a2e', fg: '#e94560', panel: '#16213e', border: '#533483', accent: '#e94560' },
-    bgPattern: 'embers',
-  },
-  {
     id: 'forest',
     label: 'Forest',
     colors: { bg: '#1b2a1b', fg: '#a8d5a2', panel: '#142414', border: '#3d6b3d', accent: '#7cb871' },

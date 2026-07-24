@@ -1,0 +1,313 @@
+'use client';
+
+import { useRef, useEffect, useImperativeHandle, forwardRef, useCallback } from 'react';
+import gsap from 'gsap';
+import { Github, Linkedin, Mail, X, ArrowRight } from 'lucide-react';
+
+const NAME        = 'Brian Vilches';
+const ROLE        = 'Full Stack Developer';
+const DESCRIPCION = 'Analista Programador con enfoque en desarrollo Backend, especializado en TypeScript y NestJS. Experiencia en construcción de APIs y sistemas web escalables, así como en la implementación y despliegue utilizando Docker y MySQL.';
+const STACK       = ['TypeScript', 'NestJS', 'Next.js', 'React', 'Java Spring Boot', 'PostgreSQL', 'Docker', 'MySQL'];
+const SOCIAL      = [
+  { href: 'https://github.com/bilibriann',         Icon: Github,   label: 'GitHub' },
+  { href: 'https://linkedin.com/in/brian-vilches', Icon: Linkedin, label: 'LinkedIn' },
+  { href: 'mailto:b.vilchesm@gmail.com',           Icon: Mail,     label: 'Email' },
+];
+
+const nameLen = NAME.length + 1;
+const roleLen = ROLE.length + 1;
+const descLen = DESCRIPCION.length + 1;
+
+export interface ContactPanelHandle {
+  open:  () => void;
+  close: () => void;
+}
+
+const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(function ContactPanel({ onClose }, ref) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const panelRef   = useRef<HTMLDivElement>(null);
+  const nameEl     = useRef<HTMLHeadingElement>(null);
+  const roleEl     = useRef<HTMLParagraphElement>(null);
+  const descEl     = useRef<HTMLParagraphElement>(null);
+  const stackEl    = useRef<HTMLDivElement>(null);
+  const socialEl   = useRef<HTMLDivElement>(null);
+  const actionsEl  = useRef<HTMLDivElement>(null);
+  const closeBtnEl = useRef<HTMLButtonElement>(null);
+  const isOpen     = useRef(false);
+
+  const resetTypewriter = useCallback(() => {
+    [nameEl.current, roleEl.current, descEl.current].forEach(el => {
+      if (!el) return;
+      el.classList.remove('scroll-type-done');
+      el.style.setProperty('--idx', '0');
+    });
+  }, []);
+
+  const startTypewriter = useCallback(() => {
+    const n = nameEl.current;
+    const r = roleEl.current;
+    const d = descEl.current;
+    if (!n || !r || !d) return;
+
+    gsap.timeline()
+      .fromTo(n, { '--idx': 0 }, { '--idx': nameLen, duration: 0.8, ease: `steps(${nameLen})`, onComplete: () => n.classList.add('scroll-type-done') })
+      .fromTo(r, { '--idx': 0 }, { '--idx': roleLen, duration: 0.6, ease: `steps(${roleLen})`, onComplete: () => r.classList.add('scroll-type-done') })
+      .fromTo(d, { '--idx': 0 }, { '--idx': descLen, duration: 3.5, ease: `steps(${descLen})`, onComplete: () => d.classList.add('scroll-type-done') });
+  }, []);
+
+  const close = useCallback(() => {
+    if (!isOpen.current) return;
+    isOpen.current = false;
+    onClose?.();
+
+    const items = [actionsEl.current, socialEl.current, stackEl.current, descEl.current, roleEl.current, nameEl.current, closeBtnEl.current];
+
+    gsap.timeline({
+      onComplete: () => {
+        if (overlayRef.current) overlayRef.current.style.visibility = 'hidden';
+        resetTypewriter();
+      },
+    })
+      .to(items,             { opacity: 0, y: -10, duration: 0.18, stagger: 0.03, ease: 'power2.in' })
+      .to(panelRef.current,  { xPercent: 100, duration: 0.35, ease: 'power2.in' }, '-=0.05')
+      .to(overlayRef.current,{ opacity: 0, duration: 0.35, ease: 'power2.in' }, '<');
+  }, [resetTypewriter, onClose]);
+
+  const open = useCallback(() => {
+    if (isOpen.current) return;
+    isOpen.current = true;
+
+    const overlay = overlayRef.current;
+    const panel   = panelRef.current;
+    if (!overlay || !panel) return;
+
+    overlay.style.visibility = 'visible';
+
+    const items = [nameEl.current, roleEl.current, descEl.current, stackEl.current, socialEl.current, actionsEl.current];
+
+    // x:0 limpia el translateX(100%) inline (gsap lo leería como px y lo sumaría
+    // al xPercent, dejando el panel fuera de pantalla). Solo xPercent posiciona.
+    gsap.set(panel,          { x: 0, xPercent: 100, opacity: 1 });
+    gsap.set(items,          { opacity: 0, y: 22 });
+    gsap.set(closeBtnEl.current, { opacity: 0 });
+
+    gsap.timeline()
+      .to(overlay,            { opacity: 1,  duration: 0.35, ease: 'power2.out' })
+      .to(panel,              { xPercent: 0, duration: 0.5, ease: 'power3.out' }, '-=0.2')
+      .to(closeBtnEl.current, { opacity: 1,  duration: 0.25, ease: 'power3.out' },    '-=0.1')
+      .to(items,              { opacity: 1, y: 0, duration: 0.45, stagger: 0.07, ease: 'power3.out' }, '-=0.15')
+      .call(startTypewriter);
+  }, [startTypewriter]);
+
+  useImperativeHandle(ref, () => ({ open, close }), [open, close]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && isOpen.current) close(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [close]);
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        ref={overlayRef}
+        onClick={close}
+        style={{
+          position: 'fixed', inset: 0, zIndex: 200,
+          background: 'rgba(0,0,0,0.55)',
+          opacity: 0,
+          visibility: 'hidden',
+        }}
+      />
+
+      {/* Panel lateral */}
+      <div
+        ref={panelRef}
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: 'fixed', top: 0, right: 0,
+          height: '100dvh',
+          width: 'min(440px, 92vw)',
+          zIndex: 201,
+          background: 'var(--theme-panel)',
+          borderLeft: '1px solid var(--theme-border)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          transform: 'translateX(100%)',
+        }}
+      >
+        {/* Header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '1.25rem 1.5rem',
+          borderBottom: '1px solid var(--theme-border)',
+          flexShrink: 0,
+        }}>
+          <span style={{
+            fontFamily: 'var(--font-mono, monospace)',
+            fontSize: '0.68rem',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'var(--theme-fg-dim)',
+          }}>
+            perfil.ts
+          </span>
+          <button
+            ref={closeBtnEl}
+            onClick={close}
+            aria-label="Cerrar panel"
+            style={{
+              // Oculto: el burger (X de sables) es ahora el botón de cerrar.
+              // Se mantiene en el DOM para la lógica/animación existente.
+              display: 'none',
+              background: 'transparent',
+              border: '1px solid var(--theme-border)',
+              color: 'var(--theme-fg-muted)',
+              width: '32px', height: '32px',
+              alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border-hover)';
+              (e.currentTarget as HTMLElement).style.color = 'var(--theme-fg)';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = 'var(--theme-border)';
+              (e.currentTarget as HTMLElement).style.color = 'var(--theme-fg-muted)';
+            }}
+          >
+            <X size={14} />
+          </button>
+        </div>
+
+        {/* Contenido scrolleable */}
+        <div style={{
+          flex: 1, overflowY: 'auto',
+          padding: '2rem 1.5rem',
+          display: 'flex', flexDirection: 'column', gap: '1.75rem',
+        }}>
+
+          {/* Nombre + Rol */}
+          <div>
+            <h2
+              ref={nameEl}
+              style={{
+                position: 'relative',
+                fontFamily: 'var(--font-mono, monospace)',
+                fontSize: 'clamp(1.3rem, 4vw, 1.65rem)',
+                fontWeight: 700,
+                color: 'var(--theme-fg)',
+                lineHeight: 1.2,
+                marginBottom: '0.5rem',
+                '--text-length': nameLen,
+              } as React.CSSProperties}
+            >
+              <span className="scroll-type-span">{NAME} </span>
+            </h2>
+            <p
+              ref={roleEl}
+              style={{
+                position: 'relative',
+                fontFamily: 'var(--font-mono, monospace)',
+                fontSize: '0.88rem',
+                '--text-length': roleLen,
+              } as React.CSSProperties}
+            >
+              <span
+                className="scroll-type-span"
+                style={{ '--st-color': 'var(--theme-accent)' } as React.CSSProperties}
+              >
+                {ROLE}{' '}
+              </span>
+            </p>
+          </div>
+
+          {/* Descripción */}
+          <p
+            ref={descEl}
+            style={{
+              position: 'relative',
+              fontFamily: 'var(--font-mono, monospace)',
+              fontSize: '0.77rem',
+              lineHeight: 1.75,
+              '--text-length': descLen,
+            } as React.CSSProperties}
+          >
+            <span className="scroll-type-span">{DESCRIPCION} </span>
+          </p>
+
+          {/* Stack */}
+          <div ref={stackEl}>
+            <p style={{
+              fontFamily: 'var(--font-mono, monospace)',
+              fontSize: '0.65rem',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--theme-fg-dim)',
+              marginBottom: '0.75rem',
+            }}>
+              Stack
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem' }}>
+              {STACK.map(tech => (
+                <span key={tech} style={{
+                  fontFamily: 'var(--font-mono, monospace)',
+                  fontSize: '0.71rem',
+                  padding: '0.22rem 0.6rem',
+                  border: '1px solid var(--theme-border)',
+                  color: 'var(--theme-fg-muted)',
+                  background: 'rgba(var(--theme-accent-rgb), 0.05)',
+                  borderRadius: '2px',
+                }}>
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Redes sociales */}
+          <div ref={socialEl} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {SOCIAL.map(({ href, Icon, label }) => (
+              <a
+                key={label}
+                href={href}
+                target={href.startsWith('http') ? '_blank' : undefined}
+                rel="noopener noreferrer"
+                aria-label={label}
+                style={{ color: 'var(--theme-fg-dim)', display: 'flex' }}
+                onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg)')}
+                onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg-dim)')}
+              >
+                <Icon size={18} />
+              </a>
+            ))}
+            <div style={{ height: '1px', flex: 1, background: 'var(--theme-border)' }} />
+          </div>
+
+          {/* Botones de acción */}
+          <div ref={actionsEl} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <a
+              href="mailto:b.vilchesm@gmail.com"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                padding: '0.6rem 1.25rem',
+                fontSize: '0.8rem', fontWeight: 600,
+                background: 'var(--theme-accent)',
+                color: 'var(--theme-accent-on)',
+                textDecoration: 'none',
+                borderRadius: '2px',
+              }}
+            >
+              Contactar <ArrowRight size={13} />
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+});
+
+export default ContactPanel;

@@ -1,0 +1,616 @@
+/* Variables del módulo, mapeadas a los tokens del tema del proyecto: el panel
+   adopta la paleta activa y sigue los cambios de tema. Ni un color a mano fuera
+   de este bloque. Se declaran en `.container` (raíz del componente) en vez de
+   `:root` porque Next.js exige selectores "puros" en los CSS Modules. */
+.container {
+  --bg-card: var(--theme-panel);
+  --bg-card-sel: var(--theme-panel-hover);
+  --bg-thumb: var(--theme-bg-alt);
+  --border: var(--theme-border);
+  --text-primary: var(--theme-fg);
+  --text-muted: var(--theme-fg-muted);
+  --text-dim: var(--theme-fg-dim);
+  --text-body: var(--theme-fg-muted);
+  --accent: var(--theme-accent);
+  --accent-rgb: var(--theme-accent-rgb);
+  --icon-marker: var(--theme-fg-dim);
+  --hover: var(--theme-panel-hover);
+  /* Rojo/rosa de foco del enjambre (HUD fijo, independiente del tema). */
+  --focus: #fe296d;
+  --focus-rgb: 254, 41, 109;
+  --overlay-bg: rgba(0, 0, 0, 0.82);
+  --overlay-fg: #ffffff;
+  --font-mono: var(--font-mono, ui-monospace, "SF Mono", Menlo, monospace);
+
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  padding: 20px;
+}
+
+/* ── Columna izquierda: tarjeta de contactos ───────────────────────────── */
+.listCard {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(var(--accent-rgb), 0.03);
+}
+
+.listHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.listHeadIcon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.listTitle {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.countPill {
+  margin-left: auto;
+  min-width: 30px;
+  padding: 2px 10px;
+  text-align: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-thumb);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Buscador */
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 9px 12px 9px 34px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-thumb);
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 160ms ease;
+}
+
+.searchInput::placeholder {
+  color: var(--text-dim);
+}
+
+.searchInput:focus {
+  border-color: var(--accent);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  min-height: 0;
+  flex: 1;
+  max-height: 62vh;
+  scrollbar-width: thin;
+}
+
+/* Cada fila es una TARJETA con borde (upgrade de la barra lateral). */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-card);
+  color: inherit;
+  font-family: inherit;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.item:hover {
+  background: var(--hover);
+  border-color: rgba(var(--accent-rgb), 0.4);
+}
+
+.item:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.itemSelected,
+.itemSelected:hover {
+  background: var(--bg-card-sel);
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 16px rgba(var(--accent-rgb), 0.35);
+}
+
+.thumb {
+  position: relative;
+  width: 46px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--bg-thumb);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-marker);
+}
+
+.thumbImg,
+.thumbCanvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.textBlock {
+  min-width: 0;
+  flex: 1;
+}
+
+.name {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemSelected .name {
+  color: var(--accent);
+}
+
+.meta {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.4px;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemChevron {
+  flex-shrink: 0;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.itemSelected .itemChevron {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Columna derecha: tarjeta de detalle ───────────────────────────────── */
+.detailCard {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(var(--accent-rgb), 0.03);
+  overflow: hidden;
+}
+
+/* Visor (imagen) ocupa la parte superior de la tarjeta, sin borde propio. */
+.visor {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg-thumb);
+  border-bottom: 1px solid var(--border);
+}
+
+.visorCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.markerFallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-marker);
+}
+
+/* FIJADO arriba-izquierda con pin */
+.status {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Nombre arriba-derecha */
+.lockLabel {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  z-index: 2;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Contador + navegación abajo-derecha */
+.nav {
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.counter {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.navBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.navBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Marco de foco rojo/rosa (efecto del enjambre) */
+.lockFrame {
+  position: absolute;
+  inset: 12px;
+  z-index: 2;
+  color: var(--focus);
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(var(--focus-rgb), 0.7));
+  animation: lockIn 0.5s ease-out, lockPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes lockPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes lockIn {
+  from {
+    transform: scale(1.3);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.lockCorner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+}
+.lockTL {
+  top: 0;
+  left: 0;
+  border-top: 2.5px solid var(--focus);
+  border-left: 2.5px solid var(--focus);
+}
+.lockTR {
+  top: 0;
+  right: 0;
+  border-top: 2.5px solid var(--focus);
+  border-right: 2.5px solid var(--focus);
+}
+.lockBL {
+  bottom: 0;
+  left: 0;
+  border-bottom: 2.5px solid var(--focus);
+  border-left: 2.5px solid var(--focus);
+}
+.lockBR {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2.5px solid var(--focus);
+  border-right: 2.5px solid var(--focus);
+}
+
+.clickable {
+  cursor: zoom-in;
+}
+
+.zoomHint {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--overlay-fg);
+  background: rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transition: opacity 160ms ease;
+  pointer-events: none;
+}
+
+.visor:hover .zoomHint {
+  opacity: 1;
+}
+
+/* Cuerpo del detalle (bajo la imagen) */
+.detailBody {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detailTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.titleBlock {
+  min-width: 0;
+  flex: 1;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.titleRule {
+  display: block;
+  width: 64px;
+  height: 3px;
+  margin: 8px 0 12px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.6);
+}
+
+.description {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--text-body);
+  max-width: 60ch;
+  margin: 0;
+}
+
+/* Tarjeta de fabricante con emblema */
+.manufCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 320px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-card);
+}
+
+.manufIcon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.manufText {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--accent);
+}
+
+/* Stats: 4 tarjetas con icono circular */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.cell {
+  padding: 16px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-card);
+  text-align: center;
+}
+
+.statIcon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  background: rgba(var(--accent-rgb), 0.08);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statLabel {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+.statValue {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.state {
+  flex: 1;
+  padding: 40px 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ── Lightbox de la imagen fijada ──────────────────────────────────────── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--overlay-bg);
+}
+
+.lightboxInner {
+  position: relative;
+  max-width: 90vw;
+}
+
+.lightboxImg {
+  display: block;
+  max-width: 90vw;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.35);
+}
+
+.lightboxCaption {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--overlay-fg);
+}
+
+.lightboxClose {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+/* Responsive: apila columnas en pantallas angostas */
+@media (max-width: 780px) {
+  .container {
+    flex-direction: column;
+  }
+  .listCard {
+    width: 100%;
+  }
+  .list {
+    max-height: 40vh;
+  }
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .itemChevron,
+  .searchInput,
+  .navBtn,
+  .zoomHint {
+    transition: none;
+  }
+  .lockFrame {
+    animation: none;
+  }
+}
