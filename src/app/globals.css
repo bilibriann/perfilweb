@@ -31,16 +31,16 @@
 
 /* Raíz fluida: el sitio está dimensionado en rem (Tailwind + módulos), así que
    escalar `html` reescala tipografía, espaciados y anchos `max-w-*` a la vez.
-   16px hasta 1280px de ancho → 24px desde 2560px, interpolado en medio: en
+   16px hasta 1280px de ancho → 22px desde 2560px, interpolado en medio: en
    monitores grandes el contenido crece en vez de quedarse en una isla chica.
    En rem (no px) para no pisar el tamaño de fuente que el usuario configuró.
 
-   Este es EL knob de tamaño del sitio: subir el techo agranda todo a la vez y
-   en proporción. Antes había reductores `scale(0.8)` sueltos por componente,
-   que se multiplicaban entre sí y peleaban con esto. */
+   Knob de tamaño global del sitio: subir el techo agranda todo en proporción.
+   Los bloques que además llevan escala propia (`--bloque-escala`, el panel de
+   naves) se multiplican sobre esto. */
 html {
   scroll-behavior: smooth;
-  font-size: clamp(1rem, 0.625vw + 0.5rem, 1.5rem);
+  font-size: clamp(1rem, 0.46875vw + 0.625rem, 1.375rem);
 }
 
 body {
@@ -56,6 +56,20 @@ body {
      para navegadores sin soporte de clip. */
   overflow-x: hidden;
   overflow-x: clip;
+}
+
+/* ─── Bloques con escala propia ─────────────────────────────────────────────
+   Algunas secciones se dibujan reducidas para que respiren en escritorio. En
+   pantallas angostas ese margen no sobra: ahí la escala vuelve a 1. */
+.bloque-escalado {
+  transform: scale(var(--bloque-escala, 0.8));
+  transform-origin: top center;
+}
+
+@media (max-width: 780px) {
+  .bloque-escalado {
+    transform: none;
+  }
 }
 
 /* ─── Scrollbar ─────────────────────────────────────────────────────────── */

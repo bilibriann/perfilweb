@@ -13,7 +13,7 @@ export default function Inicio() {
       style={{ minHeight: '100dvh' }}
     >
       {/* Panel maestro/detalle de contactos. */}
-      <div className="w-full max-w-6xl mx-auto">
+      <div className="w-full max-w-5xl mx-auto">
         <ContactPanel />
       </div>
     </section>

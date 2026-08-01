@@ -33,6 +33,12 @@
     Roboto,
     sans-serif;
   padding: 1.25rem;
+
+  /* Escala global del panel: 0.8 = 20% más pequeño, todo proporcional.
+     Ajusta este valor para reescalar el panel completo de una vez. */
+  --panel-scale: 0.8;
+  transform: scale(var(--panel-scale));
+  transform-origin: center;
 }
 
 /* ── Columna izquierda: tarjeta de contactos ───────────────────────────── */
@@ -45,6 +51,12 @@
   padding: 1rem;
   border-radius: 0.875rem;
   background: rgba(var(--accent-rgb), 0.03);
+
+  /* Escala del panel IZQUIERDO (lista de contactos), independiente.
+     1 = tamaño normal. Baja el valor para achicar solo esta columna. */
+  --list-scale: 0.8;
+  transform: scale(var(--list-scale));
+  transform-origin: center;
 }
 
 .listHead {
@@ -553,6 +565,12 @@
   border-radius: 0.75rem;
   background: var(--bg-card);
   text-align: center;
+
+  /* Escala de cada tarjeta de stat (mismo método que el panel).
+     Ajusta este valor para reescalar las 4 tarjetas de una vez. */
+  --cell-scale: 0.8;
+  transform: scale(var(--cell-scale));
+  transform-origin: center;
 }
 
 .statIcon {
@@ -641,17 +659,25 @@
   cursor: pointer;
 }
 
-/* Responsive: apila columnas en pantallas angostas. El desfase vertical del
-   detalle no aplica apilado, y sin transform el panel deja de ser contenedor de
-   sus hijos `position: fixed` (lo que descuadraba el lightbox). */
+/* Responsive: apila columnas en pantallas angostas.
+
+   Los reductores de escala existen para que el panel quepa junto al resto en
+   escritorio. En un teléfono no hay nada al lado que compensar: encogerlo un
+   20-36% solo deja el texto ilegible, así que aquí vuelven a 1 y se anula el
+   transform. De paso el panel deja de ser contenedor de sus hijos
+   `position: fixed`, que es lo que descuadraba el lightbox. */
 @media (max-width: 780px) {
   .container {
     flex-direction: column;
+    --panel-scale: 1;
+    transform: none;
     padding: 1rem;
     gap: 1rem;
   }
   .listCard {
     width: 100%;
+    --list-scale: 1;
+    transform: none;
   }
   .list {
     max-height: 40vh;
@@ -661,6 +687,8 @@
     transform: none;
   }
   .cell {
+    --cell-scale: 1;
+    transform: none;
     padding: 0.875rem 0.5rem;
   }
   .stats {

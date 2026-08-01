@@ -173,9 +173,12 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
 
   return (
     <section id="projects" className="py-16 sm:py-24" style={{ background: bg }}>
-      {/* Sin reducción propia: el tamaño lo manda la raíz fluida de globals.css,
-          igual que en el resto del sitio. */}
-      <div ref={bloqueRef} className="max-w-4xl mx-auto px-4 sm:px-6">
+      {/* `bloque-escalado` (globals.css) lo dibuja al 80% en escritorio y a
+          tamaño completo en móvil. */}
+      <div
+        ref={bloqueRef}
+        className="bloque-escalado max-w-3xl mx-auto px-4 sm:px-6"
+      >
         {/* Contenedor relativo: ancla de la magic-area */}
         <div
           ref={contenedorRef}
