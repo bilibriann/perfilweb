@@ -1,15 +1,9 @@
 'use client';
 
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-} from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { Github, Globe, Package, ArrowUpRight } from 'lucide-react';
+import { revelarBloqueAlEntrar, useEntradaLayout } from '@/lib/anim';
 
 interface Enlace {
   etiqueta: string;
@@ -86,8 +80,7 @@ const PROYECTOS: Proyecto[] = [
 ];
 
 export default function SeccionProyectos({ bg }: { bg: string }) {
-  const refSeccion = useRef<HTMLDivElement>(null);
-  const enVista = useInView(refSeccion, { once: true, margin: '-80px' });
+  const bloqueRef = useRef<HTMLDivElement>(null);
 
   // --- Refs de la mecánica "Magic Area" -------------------------------------
   const contenedorRef = useRef<HTMLDivElement>(null); // ancla relativa
@@ -112,12 +105,9 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
     const tarjeta = tarjetasRef.current[indice];
     if (!contenedor || !magic || !tarjeta) return;
 
-    // Geometría de LAYOUT (offset*), no visual: es inmune al transform:scale del
-    // contenedor de proyectos. getBoundingClientRect devolvería medidas ya
-    // escaladas que, aplicadas al resaltado que vive dentro del mismo contexto
-    // escalado, lo encogen y lo dejan corto antes de la miniatura. offsetParent
-    // de cada tarjeta es `contenedor` (position: relative), igual que la magic-
-    // area, así que las coordenadas coinciden.
+    // Geometría de LAYOUT (offset*), no visual: offsetParent de cada tarjeta es
+    // `contenedor` (position: relative), igual que la magic-area, así que las
+    // coordenadas coinciden sin conversión.
     const props = {
       x: tarjeta.offsetLeft,
       y: tarjeta.offsetTop,
@@ -144,6 +134,12 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
     if (magicRef.current) {
       gsap.set(magicRef.current, { opacity: 1 }); // evita el "salto" inicial
     }
+  }, []);
+
+  // El bloque entero de proyectos aparece de 0 a 100 al llegar a él scrolleando.
+  useEntradaLayout(() => {
+    if (!bloqueRef.current) return;
+    return revelarBloqueAlEntrar(bloqueRef.current);
   }, []);
 
   useEffect(() => {
@@ -176,28 +172,10 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
   }
 
   return (
-    <section id="projects" className="py-24" style={{ background: bg }}>
-      {/* Escala del contenedor de proyectos (mismo patrón que ContactPanel).
-          1 = tamaño normal. Baja --cell-scale para achicar todo el bloque. */}
-      <div
-        className="max-w-3xl mx-auto px-6"
-        style={
-          {
-            '--cell-scale': 0.8,
-            transform: 'scale(var(--cell-scale))',
-            transformOrigin: 'top center',
-          } as CSSProperties
-        }
-      >
-        {/* Encabezado */}
-        <motion.div
-          ref={refSeccion}
-          initial={{ opacity: 0, y: 16 }}
-          animate={enVista ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.4 }}
-          className="mb-12"
-        ></motion.div>
-
+    <section id="projects" className="py-16 sm:py-24" style={{ background: bg }}>
+      {/* Sin reducción propia: el tamaño lo manda la raíz fluida de globals.css,
+          igual que en el resto del sitio. */}
+      <div ref={bloqueRef} className="max-w-4xl mx-auto px-4 sm:px-6">
         {/* Contenedor relativo: ancla de la magic-area */}
         <div
           ref={contenedorRef}
@@ -247,13 +225,15 @@ export default function SeccionProyectos({ bg }: { bg: string }) {
                 originalActive.current = indice;
                 setActiveItem(indice);
               }}
-              className="relative z-[1] flex items-center justify-between gap-5 p-5"
+              // En móvil la miniatura de 160px se comía la mitad del ancho: ahí
+              // la tarjeta se apila y la vista previa pasa arriba, a lo ancho.
+              className="relative z-[1] flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-4 sm:gap-5 p-4 sm:p-5"
               style={{ color: 'var(--theme-fg)' }}
             >
               {/* Izquierda: título + descripción + etiquetas + enlaces */}
               <div className="min-w-0">
                 <h3
-                  className="text-lg font-semibold mb-1.5"
+                  className="text-base sm:text-lg font-semibold mb-1.5"
                   style={{ color: 'var(--theme-fg)' }}
                 >
                   {proyecto.titulo}
@@ -369,10 +349,9 @@ function Miniatura({
 
   return (
     <div
-      className="shrink-0 flex items-center justify-center overflow-hidden transition-all duration-300"
+      // w-full en móvil (la tarjeta está apilada), 160px fijos desde sm.
+      className="shrink-0 flex items-center justify-center overflow-hidden transition-all duration-300 w-full h-32 sm:w-40 sm:h-[100px]"
       style={{
-        width: 160,
-        height: 100,
         borderRadius: 2,
         border: '1px solid var(--theme-border)',
         background: 'var(--theme-bg-alt)',

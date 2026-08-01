@@ -23,7 +23,7 @@ export default function PieDePagina({ bg }: { bg: string }) {
         background: bg,
       }}
     >
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <nav className="flex flex-wrap justify-center gap-6">
             {ENLACES_NAV.map(({ etiqueta, enlace }) => (

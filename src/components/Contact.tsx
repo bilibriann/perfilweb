@@ -1,28 +1,28 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
 import VentanaContacto from '@/components/CodeWindow';
+import { revelarBloqueAlEntrar, useEntradaLayout } from '@/lib/anim';
 
 export default function Contacto({ bg }: { bg: string }) {
-  const refSeccion = useRef(null);
-  const enVista    = useInView(refSeccion, { once: true, margin: '-80px' });
+  const bloqueRef = useRef<HTMLDivElement>(null);
+
+  // El bloque entero de contacto aparece de 0 a 100 al llegar a él scrolleando,
+  // igual que el de proyectos.
+  useEntradaLayout(() => {
+    if (!bloqueRef.current) return;
+    return revelarBloqueAlEntrar(bloqueRef.current);
+  }, []);
 
   return (
-    <section id="contact" className="py-24" style={{ background: bg }}>
-      <div className="max-w-6xl mx-auto px-6">
-        <motion.div
-          ref={refSeccion}
-          initial={{ opacity: 0, y: 16 }}
-          animate={enVista ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="flex justify-center"
-        >
+    <section id="contact" className="py-16 sm:py-24" style={{ background: bg }}>
+      <div ref={bloqueRef} className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="flex justify-center">
           {/* Ventana de código (contact.controller.ts) centrada */}
           <div className="w-full max-w-2xl">
             <VentanaContacto />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -29,7 +29,9 @@ export default function ThemeToggle() {
           border: '1px solid var(--theme-border)',
           borderRadius: '14px',
           padding: '1.1rem',
-          width: '290px',
+          // 290px salvo que la pantalla no dé: en teléfonos angostos el popup
+          // se salía del viewport por la derecha.
+          width: 'min(290px, calc(100vw - 3rem))',
           boxShadow: '0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
           backdropFilter: 'blur(16px)',
         }}>

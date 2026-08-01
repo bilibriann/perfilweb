@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 /**
  * Coreografía de entrada única de la página.
@@ -51,6 +52,43 @@ export function animarEntrada(
   extra: gsap.TweenVars = {},
 ): gsap.core.Tween {
   return gsap.to(items, varsEntrada(extra));
+}
+
+/** El visitante pidió menos animación: se revela todo de una y sin moverse. */
+export function movimientoReducido(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
+/**
+ * Aparición del bloque completo al llegar a él scrolleando: el componente entero
+ * pasa de invisible a visible como una sola pieza, no por partes. Se revela una
+ * vez y se queda.
+ *
+ * Devuelve la función de limpieza que hay que llamar al desmontar.
+ */
+export function revelarBloqueAlEntrar(bloque: HTMLElement): () => void {
+  // Sin animación el bloque debe quedar visible, nunca en opacidad 0.
+  if (movimientoReducido()) return () => {};
+
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.set(bloque, { opacity: 0 });
+
+  const st = ScrollTrigger.create({
+    trigger: bloque,
+    start: 'top 85%',
+    once: true,
+    onEnter: () =>
+      gsap.to(bloque, {
+        opacity: 1,
+        duration: ENTRADA.duracion,
+        ease: ENTRADA.ease,
+      }),
+  });
+
+  return () => st.kill();
 }
 
 /**
