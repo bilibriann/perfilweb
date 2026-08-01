@@ -28,7 +28,16 @@
 
 /* ─── Base ──────────────────────────────────────────────────────────────── */
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+
+/* Raíz fluida: el sitio está dimensionado en rem (Tailwind + módulos), así que
+   escalar `html` reescala tipografía, espaciados y anchos `max-w-*` a la vez.
+   16px hasta 1280px de ancho → 22px desde 2560px, interpolado en medio: en
+   monitores grandes el contenido crece en vez de quedarse en una isla chica.
+   En rem (no px) para no pisar el tamaño de fuente que el usuario configuró. */
+html {
+  scroll-behavior: smooth;
+  font-size: clamp(1rem, 0.46875vw + 0.625rem, 1.375rem);
+}
 
 body {
   background-color: var(--theme-bg);

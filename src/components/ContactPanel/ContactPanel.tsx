@@ -19,6 +19,9 @@ import {
 
 const dosDigitos = (n: number): string => String(n).padStart(2, '0');
 
+/** Cada cuánto el visor salta solo a otra nave al azar. */
+const AUTO_MS = 6000;
+
 /** Línea mono secundaria de cada fila: telemetría derivada de specs reales. */
 function lineaTelemetria(nave: Nave, indice: number): string {
   const { hyperdrive, crew, model } = nave.specs;
@@ -51,6 +54,13 @@ function statsVisor(specs: EspecificacionesNave): StatItem[] {
 }
 
 // ── Iconos SVG inline ────────────────────────────────────────────────────────
+
+/** Tamaño de icono en rem: sigue la raíz fluida en vez de anclarse a px, para
+    que los iconos crezcan junto al resto del panel en monitores grandes. */
+const dim = (n: number) => ({
+  style: { width: `${n / 16}rem`, height: `${n / 16}rem` },
+});
+
 const svgBase = {
   fill: 'none' as const,
   stroke: 'currentColor',
@@ -68,13 +78,7 @@ function ImageMarkerIcon({
   className?: string;
 }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      className={className}
-      {...svgBase}
-    >
+    <svg {...dim(size)} viewBox="0 0 24 24" className={className} {...svgBase}>
       <rect x="3" y="3" width="18" height="18" rx="2" />
       <circle cx="8.5" cy="8.5" r="1.5" />
       <path d="M21 15l-5-5L5 21" />
@@ -84,8 +88,7 @@ function ImageMarkerIcon({
 function ContactsIcon() {
   return (
     <svg
-      width={20}
-      height={20}
+      {...dim(20)}
       viewBox="0 0 24 24"
       className={styles.listHeadIcon}
       {...svgBase}
@@ -99,8 +102,7 @@ function ContactsIcon() {
 function SearchIcon() {
   return (
     <svg
-      width={15}
-      height={15}
+      {...dim(15)}
       viewBox="0 0 24 24"
       className={styles.searchIcon}
       {...svgBase}
@@ -112,27 +114,21 @@ function SearchIcon() {
 }
 function ChevronRight({ className }: { className?: string }) {
   return (
-    <svg
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      className={className}
-      {...svgBase}
-    >
+    <svg {...dim(16)} viewBox="0 0 24 24" className={className} {...svgBase}>
       <path d="M9 6l6 6-6 6" />
     </svg>
   );
 }
 function ChevronLeft() {
   return (
-    <svg width={16} height={16} viewBox="0 0 24 24" {...svgBase}>
+    <svg {...dim(16)} viewBox="0 0 24 24" {...svgBase}>
       <path d="M15 6l-6 6 6 6" />
     </svg>
   );
 }
 function PinIcon() {
   return (
-    <svg width={12} height={12} viewBox="0 0 24 24" {...svgBase}>
+    <svg {...dim(12)} viewBox="0 0 24 24" {...svgBase}>
       <path d="M12 17v5" />
       <path d="M9 3h6l-1 7 3 3H7l3-3-1-7z" />
     </svg>
@@ -141,8 +137,7 @@ function PinIcon() {
 function EmblemIcon() {
   return (
     <svg
-      width={26}
-      height={26}
+      {...dim(26)}
       viewBox="0 0 24 24"
       className={styles.manufIcon}
       {...svgBase}
@@ -154,7 +149,7 @@ function EmblemIcon() {
 }
 function CrewIcon() {
   return (
-    <svg width={20} height={20} viewBox="0 0 24 24" {...svgBase}>
+    <svg {...dim(20)} viewBox="0 0 24 24" {...svgBase}>
       <path d="M12 2c2.5 2.5 3.5 5.5 3.5 9 0 2-1.5 4-3.5 6-2-2-3.5-4-3.5-6C8.5 7.5 9.5 4.5 12 2z" />
       <path d="M8.5 13L5 16l1 3 3-1.5M15.5 13L19 16l-1 3-3-1.5" />
       <circle cx="12" cy="9" r="1.4" />
@@ -163,7 +158,7 @@ function CrewIcon() {
 }
 function PassengersIcon() {
   return (
-    <svg width={20} height={20} viewBox="0 0 24 24" {...svgBase}>
+    <svg {...dim(20)} viewBox="0 0 24 24" {...svgBase}>
       <circle cx="9" cy="8" r="3" />
       <path d="M3 20a6 6 0 0 1 12 0" />
       <path d="M16 5.5a3 3 0 0 1 0 5.6M18 20a6 6 0 0 0-3-5.2" />
@@ -172,7 +167,7 @@ function PassengersIcon() {
 }
 function SpeedIcon() {
   return (
-    <svg width={20} height={20} viewBox="0 0 24 24" {...svgBase}>
+    <svg {...dim(20)} viewBox="0 0 24 24" {...svgBase}>
       <path d="M4 15a8 8 0 0 1 16 0" />
       <path d="M12 15l4-4" />
       <circle cx="12" cy="15" r="1" />
@@ -181,33 +176,21 @@ function SpeedIcon() {
 }
 function ShieldIcon() {
   return (
-    <svg width={20} height={20} viewBox="0 0 24 24" {...svgBase}>
+    <svg {...dim(20)} viewBox="0 0 24 24" {...svgBase}>
       <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z" />
     </svg>
   );
 }
 function XIcon() {
   return (
-    <svg
-      width={18}
-      height={18}
-      viewBox="0 0 24 24"
-      {...svgBase}
-      strokeWidth={2}
-    >
+    <svg {...dim(18)} viewBox="0 0 24 24" {...svgBase} strokeWidth={2}>
       <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   );
 }
 function ZoomIcon() {
   return (
-    <svg
-      width={26}
-      height={26}
-      viewBox="0 0 24 24"
-      {...svgBase}
-      strokeWidth={1.75}
-    >
+    <svg {...dim(26)} viewBox="0 0 24 24" {...svgBase} strokeWidth={1.75}>
       <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
     </svg>
   );
@@ -298,6 +281,7 @@ function Visor({
   nave,
   posicion,
   total,
+  auto,
   onOpen,
   onPrev,
   onNext,
@@ -305,6 +289,7 @@ function Visor({
   nave: Nave;
   posicion: number;
   total: number;
+  auto: boolean;
   onOpen: () => void;
   onPrev: () => void;
   onNext: () => void;
@@ -348,6 +333,11 @@ function Visor({
       {clickable && <span className={styles.lockLabel}>{nave.nombre}</span>}
 
       <div className={styles.nav}>
+        {auto && (
+          <span className={styles.autoPill} title="Rastreo automático">
+            <span className={styles.autoDot} aria-hidden /> AUTO
+          </span>
+        )}
         <span className={styles.counter}>
           {dosDigitos(posicion)} / {dosDigitos(total)}
         </span>
@@ -392,6 +382,7 @@ export default function ContactPanel() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [consulta, setConsulta] = useState('');
+  const [auto, setAuto] = useState(true);
   const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -435,8 +426,28 @@ export default function ContactPanel() {
     [lista, selected],
   );
 
+  // Rastreo automático: el visor salta solo a otra nave al azar. Cambiar el id
+  // remonta el <GlitchImage key={nave.id}>, así que cada salto trae su glitch.
+  // Se detiene en cuanto el visitante toma el control (lista, flechas, zoom):
+  // pelear contra el usuario es peor que no tener la animación.
+  useEffect(() => {
+    if (!auto || modalOpen || lista.length < 2) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const id = window.setInterval(() => {
+      setSelectedId((actual) => {
+        const otras = lista.filter((n) => n.id !== actual);
+        if (otras.length === 0) return actual;
+        return otras[Math.floor(Math.random() * otras.length)].id;
+      });
+    }, AUTO_MS);
+
+    return () => window.clearInterval(id);
+  }, [auto, modalOpen, lista]);
+
   const irA = (delta: number) => {
     if (lista.length === 0) return;
+    setAuto(false);
     const base = index >= 0 ? index : 0;
     const next = Math.min(Math.max(base + delta, 0), lista.length - 1);
     setSelectedId(lista[next].id);
@@ -488,7 +499,10 @@ export default function ContactPanel() {
                   }}
                   aria-pressed={isSel}
                   className={`${styles.item} ${isSel ? styles.itemSelected : ''}`}
-                  onClick={() => setSelectedId(n.id)}
+                  onClick={() => {
+                    setAuto(false);
+                    setSelectedId(n.id);
+                  }}
                 >
                   <Thumb src={n.imagen} alt={n.nombre} />
                   <span className={styles.textBlock}>
@@ -509,7 +523,11 @@ export default function ContactPanel() {
           nave={selected}
           posicion={(index >= 0 ? index : 0) + 1}
           total={lista.length}
-          onOpen={() => setModalOpen(true)}
+          auto={auto}
+          onOpen={() => {
+            setAuto(false);
+            setModalOpen(true);
+          }}
           onPrev={() => irA(-1)}
           onNext={() => irA(1)}
         />

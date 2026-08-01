@@ -12,7 +12,9 @@ import { Github, Linkedin, Mail, X, ArrowRight } from 'lucide-react';
 import { DESLIZAMIENTO, prepararEntrada, varsEntrada } from '@/lib/anim';
 
 /** Ancho del panel. `main` reserva este espacio para no quedar tapado. */
-export const PANEL_WIDTH = 'min(380px, 92vw)';
+// En rem: acompaña la raíz fluida (globals.css) y mantiene su proporción con el
+// resto del sitio en monitores grandes. 23.75rem = 380px con la raíz por defecto.
+export const PANEL_WIDTH = 'min(23.75rem, 92vw)';
 
 /** Bajo este ancho el panel taparía casi toda la pantalla: arranca cerrado. */
 export const PANEL_MIN_VIEWPORT = 1024;
@@ -39,6 +41,25 @@ const SOCIAL = [
   },
   { href: 'mailto:b.vilchesm@gmail.com', Icon: Mail, label: 'Email' },
 ];
+
+/** Accesos del panel, en orden de aparición. `destino` es el id de la sección. */
+const ACCIONES = [
+  { etiqueta: 'Proyectos', destino: 'projects' },
+  { etiqueta: 'Contactar', destino: 'contact' },
+];
+
+const ESTILO_ACCION: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.4rem',
+  padding: '0.6rem 1.25rem',
+  fontSize: '0.8rem',
+  fontWeight: 600,
+  background: 'var(--theme-accent)',
+  color: 'var(--theme-accent-on)',
+  textDecoration: 'none',
+  borderRadius: '2px',
+};
 
 const nameLen = NAME.length + 1;
 const roleLen = ROLE.length + 1;
@@ -399,37 +420,34 @@ const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
               />
             </div>
 
-            {/* Botones de acción */}
+            {/* Botones de acción: apilados, Proyectos sobre Contactar */}
             <div
               ref={actionsEl}
-              style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: '0.75rem',
+              }}
             >
-              <a
-                href="#contact"
-                onClick={(e) => {
-                  // Baja a la sección de contacto (contact.controller) sin
-                  // cerrar el panel: ahora es una superficie permanente, no un
-                  // modal. preventDefault evita el salto brusco.
-                  e.preventDefault();
-                  document
-                    .getElementById('contact')
-                    ?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  padding: '0.6rem 1.25rem',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  background: 'var(--theme-accent)',
-                  color: 'var(--theme-accent-on)',
-                  textDecoration: 'none',
-                  borderRadius: '2px',
-                }}
-              >
-                Contactar <ArrowRight size={13} />
-              </a>
+              {ACCIONES.map(({ etiqueta, destino }) => (
+                <a
+                  key={destino}
+                  href={`#${destino}`}
+                  onClick={(e) => {
+                    // Navega sin cerrar el panel: ahora es una superficie
+                    // permanente, no un modal. preventDefault evita el salto
+                    // brusco; el scroll suave lo hace scrollIntoView.
+                    e.preventDefault();
+                    document
+                      .getElementById(destino)
+                      ?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  style={ESTILO_ACCION}
+                >
+                  {etiqueta} <ArrowRight size={13} />
+                </a>
+              ))}
             </div>
           </div>
         </div>
