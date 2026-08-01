@@ -1,13 +1,17 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@/themes/ThemeContext';
 import BarraNavegacion from '@/components/Navbar';
 import Inicio from '@/components/Hero';
 import SeccionProyectos from '@/components/Projects';
 import Contacto from '@/components/Contact';
 import PieDePagina from '@/components/Footer';
-import ContactPanel, { ContactPanelHandle } from '@/components/ContactPanel';
+import ContactPanel, {
+  PANEL_WIDTH,
+  PANEL_MIN_VIEWPORT,
+  type ContactPanelHandle,
+} from '@/components/ContactPanel';
 
 // Secciones transparentes: el único starfield fijo (GalaxyBackground) se ve
 // igual en TODA la página. Antes era `var(--theme-surface)` (rgba oscuro al
@@ -67,10 +71,32 @@ const MAIN_FOOTER = {
 export default function Pagina() {
   const panelRef = useRef<ContactPanelHandle>(null);
   const [contactOpen, setContactOpen] = useState(false);
+  // El viewport solo se conoce en cliente; empieza en false para que el HTML
+  // servido coincida con el primer render y no haya mismatch de hidratación.
+  const [hayEspacio, setHayEspacio] = useState(false);
+  const yaAbrio = useRef(false);
   const { theme } = useTheme();
   const isMain = theme.id === 'main';
 
-  // Toggle del burger: abre/cierra el panel de contacto existente.
+  useEffect(() => {
+    const mq = window.matchMedia(`(min-width: ${PANEL_MIN_VIEWPORT}px)`);
+    const sync = () => setHayEspacio(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
+  // Apertura por defecto al cargar: el panel es el estado inicial de la página,
+  // con su cascada de animaciones intacta. En pantallas chicas se deja cerrado
+  // (taparía casi todo) y queda a un toque del burger.
+  useEffect(() => {
+    if (!hayEspacio || yaAbrio.current) return;
+    yaAbrio.current = true;
+    panelRef.current?.open();
+    setContactOpen(true);
+  }, [hayEspacio]);
+
+  // Toggle del burger: oculta / vuelve a mostrar el panel.
   const toggleContact = () => {
     if (contactOpen) {
       panelRef.current?.close();      // onClose sincroniza contactOpen -> false
@@ -79,6 +105,10 @@ export default function Pagina() {
       setContactOpen(true);
     }
   };
+
+  // `main` cede el ancho del panel en vez de quedar debajo: el contenido se
+  // adapta y se re-expande al ocultarlo, en sync con el slide del panel.
+  const reservaPanel = contactOpen && hayEspacio ? PANEL_WIDTH : '0px';
 
   return (
     <>
@@ -89,7 +119,14 @@ export default function Pagina() {
           (main tiene su propio stacking context con z-index:1). */}
       <BarraNavegacion onContactClick={toggleContact} contactOpen={contactOpen} />
 
-      <main className="min-h-screen overflow-x-hidden relative" style={{ zIndex: 1 }}>
+      <main
+        className="min-h-screen overflow-x-hidden relative"
+        style={{
+          zIndex: 1,
+          paddingRight: reservaPanel,
+          transition: 'padding-right 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+        }}
+      >
         <Inicio />
 
         <div style={isMain ? MAIN_PROJECTS : undefined}>

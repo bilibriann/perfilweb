@@ -9,6 +9,13 @@ import {
 } from 'react';
 import gsap from 'gsap';
 import { Github, Linkedin, Mail, X, ArrowRight } from 'lucide-react';
+import { DESLIZAMIENTO, prepararEntrada, varsEntrada } from '@/lib/anim';
+
+/** Ancho del panel. `main` reserva este espacio para no quedar tapado. */
+export const PANEL_WIDTH = 'min(380px, 92vw)';
+
+/** Bajo este ancho el panel taparía casi toda la pantalla: arranca cerrado. */
+export const PANEL_MIN_VIEWPORT = 1024;
 
 const NAME = 'Brian Vilches Mella';
 const ROLE = 'Desarrollador Web | Programación y Análisis de sistemas.';
@@ -44,7 +51,6 @@ export interface ContactPanelHandle {
 
 const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
   function ContactPanel({ onClose }, ref) {
-    const overlayRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
     const nameEl = useRef<HTMLHeadingElement>(null);
     const roleEl = useRef<HTMLParagraphElement>(null);
@@ -119,13 +125,7 @@ const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
       ];
 
       gsap
-        .timeline({
-          onComplete: () => {
-            if (overlayRef.current)
-              overlayRef.current.style.visibility = 'hidden';
-            resetTypewriter();
-          },
-        })
+        .timeline({ onComplete: resetTypewriter })
         .to(items, {
           opacity: 0,
           y: -10,
@@ -137,11 +137,6 @@ const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
           panelRef.current,
           { xPercent: 100, duration: 0.35, ease: 'power2.in' },
           '-=0.05',
-        )
-        .to(
-          overlayRef.current,
-          { opacity: 0, duration: 0.35, ease: 'power2.in' },
-          '<',
         );
     }, [resetTypewriter, onClose]);
 
@@ -149,11 +144,8 @@ const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
       if (isOpen.current) return;
       isOpen.current = true;
 
-      const overlay = overlayRef.current;
       const panel = panelRef.current;
-      if (!overlay || !panel) return;
-
-      overlay.style.visibility = 'visible';
+      if (!panel) return;
 
       const items = [
         nameEl.current,
@@ -167,29 +159,22 @@ const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
       // x:0 limpia el translateX(100%) inline (gsap lo leería como px y lo sumaría
       // al xPercent, dejando el panel fuera de pantalla). Solo xPercent posiciona.
       gsap.set(panel, { x: 0, xPercent: 100, opacity: 1 });
-      gsap.set(items, { opacity: 0, y: 22 });
+      prepararEntrada(items);
       gsap.set(closeBtnEl.current, { opacity: 0 });
 
       gsap
         .timeline()
-        .to(overlay, { opacity: 1, duration: 0.35, ease: 'power2.out' })
-        .to(panel, { xPercent: 0, duration: 0.5, ease: 'power3.out' }, '-=0.2')
+        .to(panel, {
+          xPercent: 0,
+          duration: DESLIZAMIENTO.duracion,
+          ease: DESLIZAMIENTO.ease,
+        })
         .to(
           closeBtnEl.current,
           { opacity: 1, duration: 0.25, ease: 'power3.out' },
           '-=0.1',
         )
-        .to(
-          items,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.45,
-            stagger: 0.07,
-            ease: 'power3.out',
-          },
-          '-=0.15',
-        )
+        .to(items, varsEntrada(), '-=0.15')
         .call(startTypewriter);
     }, [startTypewriter]);
 
@@ -205,33 +190,23 @@ const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
 
     return (
       <>
-        {/* Overlay */}
-        <div
-          ref={overlayRef}
-          onClick={close}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 200,
-            background: 'rgba(0,0,0,0.55)',
-            opacity: 0,
-            visibility: 'hidden',
-          }}
-        />
-
-        {/* Panel lateral */}
+        {/* Panel lateral fijo: NO es modal. Sin overlay, el fondo animado
+            (starfield / matrix) se ve siempre y la página sigue usable
+            mientras el panel está abierto — a lo paleta de comandos. */}
         <div
           ref={panelRef}
-          onClick={(e) => e.stopPropagation()}
           style={{
             position: 'fixed',
             top: 0,
             right: 0,
             height: '100dvh',
-            width: 'min(440px, 92vw)',
+            width: PANEL_WIDTH,
             zIndex: 201,
             background: 'var(--theme-panel)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
             borderLeft: '1px solid var(--theme-border)',
+            boxShadow: '-24px 0 48px -24px rgba(0,0,0,0.55)',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
@@ -432,11 +407,10 @@ const ContactPanel = forwardRef<ContactPanelHandle, { onClose?: () => void }>(
               <a
                 href="#contact"
                 onClick={(e) => {
-                  // Cierra el drawer y baja a la sección de contacto
-                  // (contact.controller). preventDefault evita el salto brusco;
-                  // el scroll suave lo hace scrollIntoView.
+                  // Baja a la sección de contacto (contact.controller) sin
+                  // cerrar el panel: ahora es una superficie permanente, no un
+                  // modal. preventDefault evita el salto brusco.
                   e.preventDefault();
-                  close();
                   document
                     .getElementById('contact')
                     ?.scrollIntoView({ behavior: 'smooth' });

@@ -1,8 +1,15 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import gsap from 'gsap';
 import styles from './ContactPanel.module.css';
 import GlitchImage from '@/components/flota/GlitchImage';
+import {
+  RETRASO_ENTRADA,
+  animarEntrada,
+  prepararEntrada,
+  useEntradaLayout,
+} from '@/lib/anim';
 import {
   cargarNaves,
   filtrarNaves,
@@ -307,6 +314,7 @@ function Visor({
 
   return (
     <div
+      data-reveal
       className={`${styles.visor} ${clickable ? styles.clickable : ''}`}
       role={clickable ? 'button' : undefined}
       tabIndex={clickable ? 0 : undefined}
@@ -385,6 +393,7 @@ export default function ContactPanel() {
   const [modalOpen, setModalOpen] = useState(false);
   const [consulta, setConsulta] = useState('');
   const btnRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -402,6 +411,19 @@ export default function ContactPanel() {
       .finally(() => setCargando(false));
     return () => ctrl.abort();
   }, []);
+
+  // Entrada al cargar: la misma cascada que el burger le da al panel de
+  // contacto. Corre cuando la flota ya está en pantalla, no antes, porque
+  // hasta entonces solo existe el texto de "Cargando flota…".
+  useEntradaLayout(() => {
+    if (cargando || errorCarga || !rootRef.current) return;
+    const ctx = gsap.context(() => {
+      const items = gsap.utils.toArray<HTMLElement>('[data-reveal]');
+      prepararEntrada(items);
+      animarEntrada(items, { delay: RETRASO_ENTRADA });
+    }, rootRef);
+    return () => ctx.revert();
+  }, [cargando, errorCarga]);
 
   const lista = useMemo(() => filtrarNaves(naves, consulta), [naves, consulta]);
   const selected = useMemo(
@@ -448,9 +470,9 @@ export default function ContactPanel() {
   const badge = selected.specs.manufacturer ?? 'Origen sin registrar';
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={rootRef}>
       {/* Columna izquierda: tarjeta de contactos */}
-      <aside className={styles.listCard}>
+      <aside data-reveal className={styles.listCard}>
         <div className={styles.listHead}>
           <span className={styles.countPill}>{naves.length}</span>
         </div>
@@ -494,7 +516,7 @@ export default function ContactPanel() {
 
         <div className={styles.detailBody}>
           <div className={styles.detailTop}>
-            <div className={styles.titleBlock}>
+            <div data-reveal className={styles.titleBlock}>
               <h2 className={styles.title}>{selected.nombre}</h2>
               <span className={styles.titleRule} />
               <p className={styles.description}>
@@ -503,7 +525,7 @@ export default function ContactPanel() {
               </p>
             </div>
 
-            <div className={styles.manufCard}>
+            <div data-reveal className={styles.manufCard}>
               <EmblemIcon />
               <span className={styles.manufText}>{badge}</span>
             </div>
@@ -511,7 +533,7 @@ export default function ContactPanel() {
 
           <div className={styles.stats}>
             {statsVisor(selected.specs).map((s) => (
-              <div key={s.label} className={styles.cell}>
+              <div key={s.label} data-reveal className={styles.cell}>
                 <span className={styles.statIcon}>{s.icon}</span>
                 <div className={styles.statLabel}>{s.label}</div>
                 <div className={styles.statValue}>{s.value}</div>
