@@ -18,8 +18,6 @@
   /* Rojo/rosa de foco del enjambre (HUD fijo, independiente del tema). */
   --focus: #fe296d;
   --focus-rgb: 254, 41, 109;
-  --overlay-bg: rgba(0, 0, 0, 0.82);
-  --overlay-fg: #ffffff;
   --font-mono: var(--font-mono, ui-monospace, 'SF Mono', Menlo, monospace);
 
   display: flex;
@@ -471,7 +469,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--overlay-fg);
+  color: #ffffff;
   background: rgba(0, 0, 0, 0.28);
   opacity: 0;
   transition: opacity 160ms ease;
@@ -609,16 +607,21 @@
   color: var(--text-muted);
 }
 
-/* ── Lightbox de la imagen fijada ──────────────────────────────────────── */
+/* ── Lightbox de la imagen fijada ──────────────────────────────────────────
+   Se renderiza por portal en <body>, fuera de `.container`: por eso estas
+   reglas NO pueden usar los alias del módulo (--bg-card, --border…), que se
+   declaran en el contenedor. Van directo a los tokens globales del tema.
+   z-index 400: por encima del panel de contacto (201) y de la navbar (300),
+   que es lo que corresponde a un modal. */
 .lightbox {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 400;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: var(--overlay-bg);
+  background: rgba(0, 0, 0, 0.82);
 }
 
 .lightboxInner {
@@ -632,7 +635,7 @@
   max-height: 82vh;
   object-fit: contain;
   border-radius: 6px;
-  box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.35);
+  box-shadow: 0 0 40px rgba(var(--theme-accent-rgb), 0.35);
 }
 
 .lightboxCaption {
@@ -640,7 +643,7 @@
   text-align: center;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--overlay-fg);
+  color: #ffffff;
 }
 
 .lightboxClose {
@@ -653,9 +656,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-card);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
+  background: var(--theme-panel);
+  color: var(--theme-fg);
+  border: 1px solid var(--theme-border);
   cursor: pointer;
 }
 

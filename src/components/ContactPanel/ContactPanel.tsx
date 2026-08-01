@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import styles from './ContactPanel.module.css';
 import GlitchImage from '@/components/flota/GlitchImage';
@@ -226,7 +227,14 @@ function Lightbox({
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  return (
+  // Portal a <body>: dentro del panel no funcionaba. El `transform: scale()` del
+  // contenedor lo convierte en bloque de referencia de sus hijos `position:
+  // fixed`, así que el lightbox se posicionaba respecto al panel y no al
+  // viewport; y al vivir dentro de <main> (z-index: 1) quedaba sepultado bajo el
+  // panel de contacto por más z-index que se le pusiera.
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -255,7 +263,8 @@ function Lightbox({
         />
         <p className={styles.lightboxCaption}>{alt}</p>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
