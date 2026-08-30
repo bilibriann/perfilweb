@@ -102,7 +102,7 @@ export default function VentanaContacto() {
       style={{ border: '1px solid #2a2f3a', background: '#0d1117' }}
     >
       <div
-        className="flex items-center gap-2 px-4 py-3"
+        className="flex items-center gap-2 px-3 py-2.5"
         style={{ background: '#161b22', borderBottom: '1px solid #2a2f3a' }}
       >
         <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]/70" />
@@ -114,7 +114,7 @@ export default function VentanaContacto() {
       </div>
       {/* overflow-x-auto: en móvil el código no se parte ni encoge la ventana,
           se desplaza dentro de su propia caja. */}
-      <div className="p-3 sm:p-5 font-mono text-[11px] sm:text-[13px] leading-6 overflow-x-auto">
+      <div className="p-3 sm:p-4 font-mono text-[11px] sm:text-[12px] leading-5 overflow-x-auto">
         {/* Numeración y código entran juntos: si se revelaran por separado, las
             líneas quedarían un instante sin su número al costado. */}
         <div className="flex gap-3 sm:gap-4">
@@ -126,7 +126,7 @@ export default function VentanaContacto() {
               <div key={i}>{i + 1}</div>
             ))}
           </div>
-          <div className="leading-6">{lineas}</div>
+          <div className="leading-5">{lineas}</div>
         </div>
       </div>
     </div>

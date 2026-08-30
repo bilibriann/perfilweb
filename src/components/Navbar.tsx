@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-interface Props {
-  onContactClick: () => void;
-  contactOpen: boolean;
-}
-
-export default function BarraNavegacion({ onContactClick, contactOpen }: Props) {
+export default function BarraNavegacion() {
   const [desplazado, setDesplazado] = useState(false);
+
+  // El panel de contacto dejó de ser emergente: ahora la presentación vive en
+  // el hero, así que el burger sube ahí en vez de abrir/cerrar nada.
+  const irAlInicio = () =>
+    document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' });
 
   useEffect(() => {
     const onScroll = () => setDesplazado(window.scrollY > 24);
@@ -30,13 +30,12 @@ export default function BarraNavegacion({ onContactClick, contactOpen }: Props) 
       } : {}}
     >
       <div className="w-full pl-6 pr-4 h-16 flex items-center justify-end">
-        {/* Burger de sables de luz: abre/cierra la sección de contacto */}
+        {/* Burger de sables de luz: vuelve al inicio */}
         <button
           type="button"
-          className={`burger${contactOpen ? ' active' : ''}`}
-          onClick={onContactClick}
-          aria-label={contactOpen ? 'Cerrar contacto' : 'Abrir contacto'}
-          aria-expanded={contactOpen}
+          className="burger"
+          onClick={irAlInicio}
+          aria-label="Ir al inicio"
         >
           <span className="bun top" />
           <span className="filling" />
