@@ -399,3 +399,41 @@ body {
   .stack-chip:hover,
   .stack-chip:focus-visible { transform: none; }
 }
+
+/* ─── Selector de idioma de la descripción (PerfilCard) ─────────────────────
+   Sin caja: solo las letras y la línea que separa ES de EN, metido en la
+   esquina del bloque. El margen derecho negativo se come casi todo el padding
+   horizontal de la tarjeta (1.4rem), dejando las letras casi al ras del borde. */
+.lang-toggle {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  margin: -0.35rem -1.15rem 0 0;
+}
+.lang-toggle-btn {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  padding: 0.3rem 0.28rem;
+  border: 0;
+  background: none;
+  color: var(--theme-fg-dim);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
+}
+/* Única línea del selector: la que divide los dos idiomas. */
+.lang-toggle-btn + .lang-toggle-btn {
+  border-top: 1px solid var(--theme-border);
+}
+.lang-toggle-btn:hover {
+  color: var(--theme-fg);
+}
+.lang-toggle-btn[data-activo='true'] {
+  color: var(--theme-accent);
+  text-shadow: 0 0 10px rgba(var(--theme-accent-rgb), 0.45);
+}

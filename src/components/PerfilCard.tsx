@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Github, Linkedin, Mail, ArrowRight } from 'lucide-react';
 import {
@@ -15,7 +15,10 @@ const NAME = 'Brian Vilches Mella';
 const ROLE = 'Desarrollador Web | Programación y Análisis de sistemas.';
 const DESCRIPCION =
   'Programador orientado al desarrollo backend APIs y lógica de negocio, con conocimientos en bases de datos y programación orientada a objetos. Experiencia previa como Ingeniero Constructor en empresas de construcción, desarrollando competencias en planificación, organización y trabajo en equipo.';
-/** Misma descripción en inglés, escrita justo después de la versión en español. */
+type Idioma = 'es' | 'en';
+const IDIOMAS: Idioma[] = ['es', 'en'];
+
+/** Misma descripción en inglés; se muestra en lugar de la española con el selector. */
 const DESCRIPCION_EN =
   'Backend-oriented developer focused on APIs and business logic, with knowledge of databases and object-oriented programming. Previously a Construction Engineer at construction companies, where I built skills in planning, organization and teamwork.';
 /**
@@ -82,17 +85,27 @@ export default function PerfilCard() {
   const nameEl = useRef<HTMLHeadingElement>(null);
   const roleEl = useRef<HTMLParagraphElement>(null);
   const descEl = useRef<HTMLParagraphElement>(null);
-  const descEnEl = useRef<HTMLParagraphElement>(null);
+  // El bloque (párrafo + selector) es lo que entra en la cascada; descEl solo
+  // se usa para escribir el texto.
+  const descBloqueEl = useRef<HTMLDivElement>(null);
   const stackEl = useRef<HTMLDivElement>(null);
   const socialEl = useRef<HTMLDivElement>(null);
   const actionsEl = useRef<HTMLDivElement>(null);
+
+  const [idioma, setIdioma] = useState<Idioma>('es');
+  // La máquina de escribir se crea una sola vez (si cambiara de identidad se
+  // repetiría toda la entrada de la tarjeta), así que lee el idioma por ref.
+  const idiomaRef = useRef(idioma);
+  idiomaRef.current = idioma;
+  const texto = idioma === 'es' ? DESCRIPCION : DESCRIPCION_EN;
+  const largoTexto = idioma === 'es' ? descLen : descEnLen;
 
   const startTypewriter = useCallback(() => {
     const n = nameEl.current;
     const r = roleEl.current;
     const d = descEl.current;
-    const de = descEnEl.current;
-    if (!n || !r || !d || !de) return;
+    if (!n || !r || !d) return;
+    const largo = idiomaRef.current === 'es' ? descLen : descEnLen;
 
     gsap
       .timeline()
@@ -120,23 +133,52 @@ export default function PerfilCard() {
         d,
         { '--idx': 0 },
         {
-          '--idx': descLen,
+          '--idx': largo,
           duration: 3.5,
-          ease: `steps(${descLen})`,
+          ease: `steps(${largo})`,
           onComplete: () => d.classList.add('scroll-type-done'),
-        },
-      )
-      .fromTo(
-        de,
-        { '--idx': 0 },
-        {
-          '--idx': descEnLen,
-          duration: 3,
-          ease: `steps(${descEnLen})`,
-          onComplete: () => de.classList.add('scroll-type-done'),
         },
       );
   }, []);
+
+  // Cambio de idioma: reescribe el párrafo, más rápido que la entrada inicial.
+  // Es layout effect para poner --idx en 0 antes de pintar; si no, el texto
+  // nuevo asomaría un frame ya revelado con el --idx que dejó la animación
+  // anterior. La primera pasada la hace la entrada, no esto.
+  const primerRender = useRef(true);
+  useEntradaLayout(() => {
+    if (primerRender.current) {
+      primerRender.current = false;
+      return;
+    }
+    const d = descEl.current;
+    if (!d) return;
+
+    // Si aún corría la escritura inicial, mandarla a parar: si no, las dos
+    // animaciones se pelearían por --idx.
+    gsap.killTweensOf(d);
+    d.classList.remove('scroll-type-done');
+
+    if (movimientoReducido()) {
+      d.style.setProperty('--idx', String(largoTexto));
+      d.classList.add('scroll-type-done');
+      return;
+    }
+
+    const tw = gsap.fromTo(
+      d,
+      { '--idx': 0 },
+      {
+        '--idx': largoTexto,
+        duration: 1,
+        ease: `steps(${largoTexto})`,
+        onComplete: () => d.classList.add('scroll-type-done'),
+      },
+    );
+    return () => {
+      tw.kill();
+    };
+  }, [idioma, largoTexto]);
 
   // Entrada al cargar: ya no hay open/close, la tarjeta es el estado inicial de
   // la página y se anima una sola vez al montarse.
@@ -147,8 +189,7 @@ export default function PerfilCard() {
     const items = [
       nameEl.current,
       roleEl.current,
-      descEl.current,
-      descEnEl.current,
+      descBloqueEl.current,
       stackEl.current,
       socialEl.current,
       actionsEl.current,
@@ -161,8 +202,7 @@ export default function PerfilCard() {
       [
         [nameEl.current, nameLen],
         [roleEl.current, roleLen],
-        [descEl.current, descLen],
-        [descEnEl.current, descEnLen],
+        [descEl.current, idiomaRef.current === 'es' ? descLen : descEnLen],
       ].forEach(([el, largo]) => {
         const nodo = el as HTMLElement | null;
         if (!nodo) return;
@@ -260,49 +300,44 @@ export default function PerfilCard() {
           </p>
         </div>
 
-        {/* Descripción */}
-        <p
-          ref={descEl}
-          style={
-            {
-              position: 'relative',
-              fontFamily: 'var(--font-mono, monospace)',
-              fontSize: 'clamp(0.7rem, 0.85vw, 0.77rem)',
-              lineHeight: 1.75,
-              maxWidth: '68ch',
-              '--text-length': descLen,
-            } as React.CSSProperties
-          }
+        {/* Descripción + selector de idioma (ES/EN) */}
+        <div
+          ref={descBloqueEl}
+          style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}
         >
-          <span className="scroll-type-span">{DESCRIPCION} </span>
-        </p>
-
-        {/* Descripción en inglés: mismo bloque, atenuada para leerse como
-            traducción y no como un párrafo nuevo. */}
-        <p
-          ref={descEnEl}
-          lang="en"
-          style={
-            {
-              position: 'relative',
-              marginTop: '-0.9rem',
-              fontFamily: 'var(--font-mono, monospace)',
-              fontSize: 'clamp(0.7rem, 0.85vw, 0.77rem)',
-              lineHeight: 1.75,
-              maxWidth: '68ch',
-              '--text-length': descEnLen,
-            } as React.CSSProperties
-          }
-        >
-          <span
-            className="scroll-type-span"
+          <p
+            ref={descEl}
+            lang={idioma}
             style={
-              { '--st-color': 'var(--theme-fg-muted)' } as React.CSSProperties
+              {
+                position: 'relative',
+                flex: 1,
+                fontFamily: 'var(--font-mono, monospace)',
+                fontSize: 'clamp(0.7rem, 0.85vw, 0.77rem)',
+                lineHeight: 1.75,
+                maxWidth: '68ch',
+                '--text-length': largoTexto,
+              } as React.CSSProperties
             }
           >
-            {DESCRIPCION_EN}{' '}
-          </span>
-        </p>
+            <span className="scroll-type-span">{texto} </span>
+          </p>
+
+          <div className="lang-toggle" role="group" aria-label="Idioma">
+            {IDIOMAS.map((codigo) => (
+              <button
+                key={codigo}
+                type="button"
+                className="lang-toggle-btn"
+                data-activo={idioma === codigo}
+                aria-pressed={idioma === codigo}
+                onClick={() => setIdioma(codigo)}
+              >
+                {codigo.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Stack */}
         <div ref={stackEl}>
