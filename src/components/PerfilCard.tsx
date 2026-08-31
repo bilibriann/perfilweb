@@ -14,7 +14,10 @@ import {
 const NAME = 'Brian Vilches Mella';
 const ROLE = 'Desarrollador Web | Programación y Análisis de sistemas.';
 const DESCRIPCION =
-  'Programador orientado al desarrollo backend APIs y lógica de negocio, con conocimientos en bases de datos y programación orientada a objetos. Interesado en integrarme a equipos de desarrollo. Experiencia previa como Ingeniero Constructor en empresas de construcción, desarrollando competencias en planificación, organización y trabajo en equipo.';
+  'Programador orientado al desarrollo backend APIs y lógica de negocio, con conocimientos en bases de datos y programación orientada a objetos. Experiencia previa como Ingeniero Constructor en empresas de construcción, desarrollando competencias en planificación, organización y trabajo en equipo.';
+/** Misma descripción en inglés, escrita justo después de la versión en español. */
+const DESCRIPCION_EN =
+  'Backend-oriented developer focused on APIs and business logic, with knowledge of databases and object-oriented programming. Previously a Construction Engineer at construction companies, where I built skills in planning, organization and teamwork.';
 /**
  * Stack con el color oficial de cada tecnologia. `rgb` es el mismo color en
  * componentes sueltas, para las capas translucidas (fondo y glow) del hover;
@@ -64,6 +67,7 @@ const ESTILO_ACCION: React.CSSProperties = {
 const nameLen = NAME.length + 1;
 const roleLen = ROLE.length + 1;
 const descLen = DESCRIPCION.length + 1;
+const descEnLen = DESCRIPCION_EN.length + 1;
 
 /**
  * Tarjeta de presentación del hero.
@@ -78,6 +82,7 @@ export default function PerfilCard() {
   const nameEl = useRef<HTMLHeadingElement>(null);
   const roleEl = useRef<HTMLParagraphElement>(null);
   const descEl = useRef<HTMLParagraphElement>(null);
+  const descEnEl = useRef<HTMLParagraphElement>(null);
   const stackEl = useRef<HTMLDivElement>(null);
   const socialEl = useRef<HTMLDivElement>(null);
   const actionsEl = useRef<HTMLDivElement>(null);
@@ -86,7 +91,8 @@ export default function PerfilCard() {
     const n = nameEl.current;
     const r = roleEl.current;
     const d = descEl.current;
-    if (!n || !r || !d) return;
+    const de = descEnEl.current;
+    if (!n || !r || !d || !de) return;
 
     gsap
       .timeline()
@@ -119,6 +125,16 @@ export default function PerfilCard() {
           ease: `steps(${descLen})`,
           onComplete: () => d.classList.add('scroll-type-done'),
         },
+      )
+      .fromTo(
+        de,
+        { '--idx': 0 },
+        {
+          '--idx': descEnLen,
+          duration: 3,
+          ease: `steps(${descEnLen})`,
+          onComplete: () => de.classList.add('scroll-type-done'),
+        },
       );
   }, []);
 
@@ -132,6 +148,7 @@ export default function PerfilCard() {
       nameEl.current,
       roleEl.current,
       descEl.current,
+      descEnEl.current,
       stackEl.current,
       socialEl.current,
       actionsEl.current,
@@ -145,6 +162,7 @@ export default function PerfilCard() {
         [nameEl.current, nameLen],
         [roleEl.current, roleLen],
         [descEl.current, descLen],
+        [descEnEl.current, descEnLen],
       ].forEach(([el, largo]) => {
         const nodo = el as HTMLElement | null;
         if (!nodo) return;
@@ -257,6 +275,33 @@ export default function PerfilCard() {
           }
         >
           <span className="scroll-type-span">{DESCRIPCION} </span>
+        </p>
+
+        {/* Descripción en inglés: mismo bloque, atenuada para leerse como
+            traducción y no como un párrafo nuevo. */}
+        <p
+          ref={descEnEl}
+          lang="en"
+          style={
+            {
+              position: 'relative',
+              marginTop: '-0.9rem',
+              fontFamily: 'var(--font-mono, monospace)',
+              fontSize: 'clamp(0.7rem, 0.85vw, 0.77rem)',
+              lineHeight: 1.75,
+              maxWidth: '68ch',
+              '--text-length': descEnLen,
+            } as React.CSSProperties
+          }
+        >
+          <span
+            className="scroll-type-span"
+            style={
+              { '--st-color': 'var(--theme-fg-muted)' } as React.CSSProperties
+            }
+          >
+            {DESCRIPCION_EN}{' '}
+          </span>
         </p>
 
         {/* Stack */}

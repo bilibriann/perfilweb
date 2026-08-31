@@ -78,6 +78,22 @@ const PROYECTOS: Proyecto[] = [
     icono: <Globe size={26} />,
     imagen: preview('https://mareaalta-latam.com/'),
   },
+  {
+    titulo: 'Clinitaxi — Sitio Web Institucional',
+    descripcion:
+      'Sitio web institucional para empresa de taxímetros certificados. NestJS, React, TypeScript y Tailwind CSS con arquitectura modular MVC en el backend, diseño responsivo y despliegue en Hostinger.',
+    etiquetas: [
+      'NestJS',
+      'React',
+      'TypeScript',
+      'Tailwind CSS',
+      'MVC',
+      'Hostinger',
+    ],
+    // Sin URL todavía: sin `imagen`, la tarjeta cae al icono como placeholder.
+    enlaces: [],
+    icono: <Globe size={26} />,
+  },
 ];
 
 export default function SeccionProyectos({ bg }: { bg: string }) {
