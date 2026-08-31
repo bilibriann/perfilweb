@@ -37,7 +37,8 @@ const SOCIAL = [
 /** Accesos de la tarjeta, en orden de aparición. `destino` es el id de la sección. */
 const ACCIONES = [
   { etiqueta: 'Proyectos', destino: 'projects' },
-  { etiqueta: 'Contactar', destino: 'contact' },
+  // Oculto por el momento: el boton de contacto. Descomentar para restaurarlo.
+  // { etiqueta: 'Contactar', destino: 'contact' },
 ];
 
 const ESTILO_ACCION: React.CSSProperties = {

@@ -74,8 +74,9 @@ const PROYECTOS: Proyecto[] = [
       'MVC',
       'Hostinger',
     ],
-    enlaces: [],
+    enlaces: [{ etiqueta: 'Web', url: 'https://mareaalta-latam.com/' }],
     icono: <Globe size={26} />,
+    imagen: preview('https://mareaalta-latam.com/'),
   },
 ];
 

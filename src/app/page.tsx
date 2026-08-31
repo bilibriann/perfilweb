@@ -1,10 +1,14 @@
 'use client';
 
 import { useTheme } from '@/themes/ThemeContext';
-import BarraNavegacion from '@/components/Navbar';
+// Oculto por el momento: el navbar solo contenia el burger (ir al inicio) y
+// no tiene utilidad ahora. Descomenta este import y el bloque de abajo.
+// import BarraNavegacion from '@/components/Navbar';
 import Inicio from '@/components/Hero';
 import SeccionProyectos from '@/components/Projects';
-import Flota from '@/components/Flota';
+// Oculto por el momento: la seccion de la flota (API de naves de Star Wars).
+// Para volver a mostrarla, descomenta este import y el bloque de abajo.
+// import Flota from '@/components/Flota';
 import PieDePagina from '@/components/Footer';
 
 // Secciones transparentes: el único starfield fijo (GalaxyBackground) se ve
@@ -53,9 +57,9 @@ export default function Pagina() {
 
   return (
     <>
-      {/* Navbar fuera de <main>: así su z-index no queda atrapado en el
-          stacking context propio de main (z-index: 1). */}
-      <BarraNavegacion />
+      {/* Oculto por el momento. Iba fuera de <main> para que su z-index no
+          quedara atrapado en el stacking context propio de main (z-index: 1). */}
+      {/* <BarraNavegacion /> */}
 
       <main className="min-h-screen overflow-x-hidden relative" style={{ zIndex: 1 }}>
         {/* Hero: presentación + ventana de contacto, ambas al cargar. */}
@@ -65,8 +69,9 @@ export default function Pagina() {
           <SeccionProyectos bg={S} />
         </div>
 
-        {/* La flota (API de naves) cierra el contenido, antes del pie. */}
-        <Flota bg={S} />
+        {/* Oculta por el momento: la flota (API de naves) cerraba el contenido
+            antes del pie. Descomentar junto con su import para restaurarla. */}
+        {/* <Flota bg={S} /> */}
 
         <div style={isMain ? MAIN_FOOTER : undefined}>
           <PieDePagina bg={S} />
