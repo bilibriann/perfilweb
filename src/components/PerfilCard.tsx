@@ -15,14 +15,21 @@ const NAME = 'Brian Vilches Mella';
 const ROLE = 'Desarrollador Web | Programación y Análisis de sistemas.';
 const DESCRIPCION =
   'Programador orientado al desarrollo backend APIs y lógica de negocio, con conocimientos en bases de datos y programación orientada a objetos. Interesado en integrarme a equipos de desarrollo. Experiencia previa como Ingeniero Constructor en empresas de construcción, desarrollando competencias en planificación, organización y trabajo en equipo.';
+/**
+ * Stack con el color oficial de cada tecnologia. `rgb` es el mismo color en
+ * componentes sueltas, para las capas translucidas (fondo y glow) del hover;
+ * ambos se inyectan como variables CSS y los usa `.stack-chip` en globals.css.
+ */
 const STACK = [
-  'TypeScript',
-  'NestJS',
-  'Next.js',
-  'React',
-  'Java Spring Boot',
-  'Docker',
-  'MySQL',
+  { nombre: 'TypeScript', color: '#3178C6', rgb: '49,120,198' },
+  { nombre: 'NestJS', color: '#E0234E', rgb: '224,35,78' },
+  // Next.js es blanco/negro: sobre los paneles oscuros del tema va el blanco.
+  { nombre: 'Next.js', color: '#FFFFFF', rgb: '255,255,255' },
+  { nombre: 'React', color: '#61DAFB', rgb: '97,218,251' },
+  { nombre: 'Java Spring Boot', color: '#6DB33F', rgb: '109,179,63' },
+  { nombre: 'Docker', color: '#2496ED', rgb: '36,150,237' },
+  // MySQL de la marca es azul + naranjo (#F29111); aqui va en amarillo.
+  { nombre: 'MySQL', color: '#FFCC00', rgb: '255,204,0' },
 ];
 const SOCIAL = [
   { href: 'https://github.com/bilibriann', Icon: Github, label: 'GitHub' },
@@ -267,20 +274,19 @@ export default function PerfilCard() {
             Stack
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem' }}>
-            {STACK.map((tech) => (
+            {STACK.map(({ nombre, color, rgb }) => (
               <span
-                key={tech}
-                style={{
-                  fontFamily: 'var(--font-mono, monospace)',
-                  fontSize: '0.71rem',
-                  padding: '0.22rem 0.6rem',
-                  border: '1px solid var(--theme-border)',
-                  color: 'var(--theme-fg-muted)',
-                  background: 'rgba(var(--theme-accent-rgb), 0.05)',
-                  borderRadius: '2px',
-                }}
+                key={nombre}
+                className="stack-chip"
+                tabIndex={0}
+                style={
+                  {
+                    '--brand': color,
+                    '--brand-rgb': rgb,
+                  } as React.CSSProperties
+                }
               >
-                {tech}
+                {nombre}
               </span>
             ))}
           </div>

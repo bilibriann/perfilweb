@@ -356,3 +356,46 @@ body {
   opacity: var(--bg-effect-intensity, 1);
   mix-blend-mode: screen;
 }
+
+/* ─── Chips del stack (PerfilCard) ──────────────────────────────────────────
+   En reposo son neutros (colores del tema). Al pasar el cursor toman el color
+   oficial de la tecnología con un resalte (glow) y, al salir, vuelven al estado
+   neutro con la misma transición. El color viaja por `--brand` / `--brand-rgb`,
+   que el componente inyecta por chip.
+   OJO: estos estilos van en CSS y no inline porque `:hover` no puede pisar un
+   `style` inline. */
+.stack-chip {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.71rem;
+  padding: 0.22rem 0.6rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 2px;
+  color: var(--theme-fg-muted);
+  background: rgba(var(--theme-accent-rgb), 0.05);
+  cursor: default;
+  transition:
+    color 0.28s ease,
+    border-color 0.28s ease,
+    background-color 0.28s ease,
+    box-shadow 0.28s ease,
+    transform 0.28s ease,
+    text-shadow 0.28s ease;
+}
+.stack-chip:hover,
+.stack-chip:focus-visible {
+  color: var(--brand);
+  border-color: var(--brand);
+  background: rgba(var(--brand-rgb), 0.14);
+  box-shadow:
+    0 0 0 1px rgba(var(--brand-rgb), 0.45),
+    0 0 18px rgba(var(--brand-rgb), 0.45);
+  text-shadow: 0 0 10px rgba(var(--brand-rgb), 0.55);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-chip { transition: none; }
+  .stack-chip:hover,
+  .stack-chip:focus-visible { transform: none; }
+}
