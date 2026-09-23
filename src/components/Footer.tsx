@@ -53,7 +53,7 @@ export default function PieDePagina({ bg }: { bg: string }) {
                 onMouseEnter={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg-muted)')}
                 onMouseLeave={e => ((e.currentTarget as HTMLElement).style.color = 'var(--theme-fg-dim)')}
               >
-                <Icono size={17} />
+                <Icono size={18} />
               </a>
             ))}
           </div>
@@ -63,7 +63,7 @@ export default function PieDePagina({ bg }: { bg: string }) {
           className="mt-10 pt-6 flex justify-center"
           style={{ borderTop: '1px solid var(--theme-border)' }}
         >
-          <p className="text-xs font-mono" style={{ color: 'var(--theme-fg-dim)' }}>
+          <p className="text-sm font-mono" style={{ color: 'var(--theme-fg-dim)' }}>
             © {anio} Brian Vilches Portfolio.
           </p>
         </div>

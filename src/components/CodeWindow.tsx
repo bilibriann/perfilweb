@@ -114,7 +114,7 @@ export default function VentanaContacto() {
       </div>
       {/* overflow-x-auto: en móvil el código no se parte ni encoge la ventana,
           se desplaza dentro de su propia caja. */}
-      <div className="p-3 sm:p-4 font-mono text-[11px] sm:text-[12px] leading-5 overflow-x-auto">
+      <div className="p-3 sm:p-4 font-mono text-[11px] sm:text-[13px] leading-5 overflow-x-auto">
         {/* Numeración y código entran juntos: si se revelaran por separado, las
             líneas quedarían un instante sin su número al costado. */}
         <div className="flex gap-3 sm:gap-4">

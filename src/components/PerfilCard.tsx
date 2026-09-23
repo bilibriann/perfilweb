@@ -58,8 +58,8 @@ const ESTILO_ACCION: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   gap: '0.4rem',
-  padding: '0.5rem 1.05rem',
-  fontSize: '0.75rem',
+  padding: '0.55rem 1.1rem',
+  fontSize: '0.8rem',
   fontWeight: 600,
   background: 'var(--theme-accent)',
   color: 'var(--theme-accent-on)',
@@ -251,10 +251,10 @@ export default function PerfilCard() {
     >
       <div
         style={{
-          padding: '1.6rem 1.4rem',
+          padding: '1.8rem 1.6rem',
           display: 'flex',
           flexDirection: 'column',
-          gap: '1.4rem',
+          gap: '1.5rem',
         }}
       >
         {/* Nombre + Rol */}
@@ -265,7 +265,7 @@ export default function PerfilCard() {
               {
                 position: 'relative',
                 fontFamily: 'var(--font-mono, monospace)',
-                fontSize: 'clamp(1.2rem, 2.4vw, 1.6rem)',
+                fontSize: 'clamp(1.35rem, 2.6vw, 1.8rem)',
                 fontWeight: 700,
                 color: 'var(--theme-fg)',
                 lineHeight: 1.2,
@@ -282,7 +282,7 @@ export default function PerfilCard() {
               {
                 position: 'relative',
                 fontFamily: 'var(--font-mono, monospace)',
-                fontSize: 'clamp(0.76rem, 1vw, 0.85rem)',
+                fontSize: 'clamp(0.82rem, 1.1vw, 0.92rem)',
                 '--text-length': roleLen,
               } as React.CSSProperties
             }
@@ -313,7 +313,7 @@ export default function PerfilCard() {
                 position: 'relative',
                 flex: 1,
                 fontFamily: 'var(--font-mono, monospace)',
-                fontSize: 'clamp(0.7rem, 0.85vw, 0.77rem)',
+                fontSize: 'clamp(0.78rem, 0.92vw, 0.84rem)',
                 lineHeight: 1.75,
                 maxWidth: '68ch',
                 '--text-length': largoTexto,
@@ -344,7 +344,7 @@ export default function PerfilCard() {
           <p
             style={{
               fontFamily: 'var(--font-mono, monospace)',
-              fontSize: '0.65rem',
+              fontSize: '0.7rem',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
               color: 'var(--theme-fg-dim)',
