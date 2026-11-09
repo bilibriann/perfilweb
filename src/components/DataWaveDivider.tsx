@@ -10,7 +10,16 @@ function energyZone(x: number, t: number): number {
   ) * 0.5 + 0.5
 }
 
-export default function DataWaveDivider() {
+// Si se pasan topColor y bottomColor, la línea funciona como borde entre dos
+// secciones: arriba de la onda se pinta topColor y abajo bottomColor, y el
+// límite entre ambos colores se mueve junto con la línea en cada frame.
+export default function DataWaveDivider({
+  topColor,
+  bottomColor,
+}: { topColor?: string; bottomColor?: string } = {}) {
+  const colorsRef = useRef({ topColor, bottomColor })
+  colorsRef.current = { topColor, bottomColor }
+
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef    = useRef<HTMLCanvasElement>(null)
   const rafRef       = useRef<number>(0)
@@ -74,6 +83,21 @@ export default function DataWaveDivider() {
       // Transparent canvas — only draw the wave line
       ctx.clearRect(0, 0, W, H)
 
+      // Relleno de las dos secciones, con la onda como frontera.
+      const { topColor: top, bottomColor: bottom } = colorsRef.current
+      if (top && bottom) {
+        ctx.fillStyle = bottom
+        ctx.fillRect(0, 0, W, H)
+        ctx.beginPath()
+        ctx.moveTo(0, 0)
+        for (let x = 0; x < W; x++) ctx.lineTo(x, ys[x])
+        ctx.lineTo(W, ys[W - 1])
+        ctx.lineTo(W, 0)
+        ctx.closePath()
+        ctx.fillStyle = top
+        ctx.fill()
+      }
+
       const accentColor = getComputedStyle(document.documentElement)
         .getPropertyValue('--theme-accent').trim() || '#60a5fa'
       const accentRgb   = getComputedStyle(document.documentElement)
@@ -135,7 +159,7 @@ export default function DataWaveDivider() {
   return (
     <div
       ref={containerRef}
-      style={{ width: '100%', height: '180px', position: 'relative', flexShrink: 0, background: 'var(--theme-surface)' }}
+      style={{ width: '100%', height: '180px', position: 'relative', flexShrink: 0, background: bottomColor ?? 'var(--theme-surface)' }}
     >
       <canvas
         ref={canvasRef}

@@ -172,6 +172,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .tie-flyby-ship { animation: none; opacity: 0; }
+  /* El brillo de Cypress queda quieto, con una intensidad intermedia. */
+  .brillo-cypress { animation: none !important; opacity: 0.5; }
 }
 
 /* ─── Scroll-to-Type Effect ────────────────────────────────────────────── */

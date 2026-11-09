@@ -38,7 +38,7 @@ export const THEMES: ThemeDefinition[] = [
   },
   {
     id: 'portfolio',
-    label: 'Portfolio',
+    label: 'Estelar',
     type: 'simple',
     preview: 'linear-gradient(135deg, #070b14 0%, #1a2a3a 50%, #070b14 100%)',
     vars: {
@@ -57,6 +57,39 @@ export const THEMES: ThemeDefinition[] = [
       '--theme-accent-on': '#0d1117',
       '--theme-glow-1': 'rgba(91,140,255,0.14)',
       '--theme-glow-2': 'rgba(56,80,180,0.10)',
+    },
+  },
+  {
+    // Igual que "Estelar" pero sin el fondo animado: fondos lisos y la línea
+    // wave (DataWaveDivider) entre secciones, como en 796d29d.
+    // El id sigue siendo 'cypress' (nombre de su primera paleta, verde) para no
+    // perder la elección guardada en localStorage; la paleta ahora es grafito.
+    id: 'cypress',
+    label: 'Grafito',
+    type: 'simple',
+    preview: 'linear-gradient(135deg, #0D1117 0%, #222934 50%, #0D1117 100%)',
+    vars: {
+      // bg/surface = fondo de proyectos (#222934, debe coincidir con
+      // CYPRESS_PROJECTS en page.tsx); el hero lleva su propio tono más oscuro.
+      '--theme-bg': '#222934',
+      '--theme-surface': '#222934',
+      // Paneles un punto más claros que el fondo de proyectos, para que las
+      // tarjetas sigan destacando sobre él.
+      '--theme-panel': 'rgba(44,52,64,0.92)',
+      '--theme-panel-hover': 'rgba(52,61,75,0.95)',
+      '--theme-bg-alt': '#0A0D12',
+      // Paleta sobria: grafito neutro, blanco roto, grises azulados y un
+      // acento azul acero apagado, para que el conjunto se vea serio.
+      '--theme-border': 'rgba(230,234,240,0.10)',
+      '--theme-border-hover': 'rgba(143,169,199,0.45)',
+      '--theme-fg': '#E6EAF0',
+      '--theme-fg-muted': '#A0AAB8',
+      '--theme-fg-dim': '#6B7585',
+      '--theme-accent': '#8FA9C7',
+      '--theme-accent-rgb': '143,169,199',
+      '--theme-accent-on': '#0D1117',
+      '--theme-glow-1': 'rgba(143,169,199,0.08)',
+      '--theme-glow-2': 'rgba(143,169,199,0.05)',
     },
   },
 ]

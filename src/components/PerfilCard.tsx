@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 import gsap from 'gsap';
+import Image from 'next/image';
 import { Github, Linkedin, Mail, ArrowRight } from 'lucide-react';
 import {
   DESLIZAMIENTO,
@@ -12,6 +13,8 @@ import {
 } from '@/lib/anim';
 
 const NAME = 'Brian Vilches Mella';
+/** Foto de perfil: public/assets/FotoPerfil/fotodeperfil.png */
+const FOTO = '/assets/FotoPerfil/fotodeperfil.png';
 const ROLE = 'Desarrollador Web | Programación y Análisis de sistemas.';
 const DESCRIPCION =
   'Programador orientado al desarrollo backend APIs y lógica de negocio, con conocimientos en bases de datos y programación orientada a objetos. Experiencia previa como Ingeniero Constructor en empresas de construcción, desarrollando competencias en planificación, organización y trabajo en equipo.';
@@ -82,6 +85,7 @@ const descEnLen = DESCRIPCION_EN.length + 1;
  */
 export default function PerfilCard() {
   const cardRef = useRef<HTMLDivElement>(null);
+  const fotoEl = useRef<HTMLDivElement>(null);
   const nameEl = useRef<HTMLHeadingElement>(null);
   const roleEl = useRef<HTMLParagraphElement>(null);
   const descEl = useRef<HTMLParagraphElement>(null);
@@ -187,6 +191,7 @@ export default function PerfilCard() {
     if (!card) return;
 
     const items = [
+      fotoEl.current,
       nameEl.current,
       roleEl.current,
       descBloqueEl.current,
@@ -257,8 +262,40 @@ export default function PerfilCard() {
           gap: '1.5rem',
         }}
       >
-        {/* Nombre + Rol */}
-        <div>
+        {/* Foto + Nombre + Rol */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.1rem' }}>
+          {/* Foto de perfil: círculo pequeño con borde fino del tema. El PNG
+              trae la foto ya recortada en círculo sobre un fondo oscuro, así
+              que se amplía un poco para que ese fondo quede fuera del marco. */}
+          <div
+            ref={fotoEl}
+            style={{
+              flexShrink: 0,
+              width: 'clamp(64px, 7vw, 80px)',
+              aspectRatio: '1',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '1px solid var(--theme-border)',
+              boxShadow: '0 0 0 3px var(--theme-bg-alt)',
+            }}
+          >
+            <Image
+              src={FOTO}
+              alt={`Foto de ${NAME}`}
+              width={160}
+              height={160}
+              priority
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transform: 'scale(1.1)',
+                filter: 'saturate(0.85)',
+              }}
+            />
+          </div>
+
+          <div style={{ flex: 1, minWidth: 0 }}>
           <h2
             ref={nameEl}
             style={
@@ -298,6 +335,7 @@ export default function PerfilCard() {
               {ROLE}{' '}
             </span>
           </p>
+          </div>
         </div>
 
         {/* Descripción + selector de idioma (ES/EN) */}

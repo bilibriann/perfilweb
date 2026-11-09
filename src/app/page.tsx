@@ -9,7 +9,11 @@ import SeccionProyectos from '@/components/Projects';
 // Oculto por el momento: la seccion de la flota (API de naves de Star Wars).
 // Para volver a mostrarla, descomenta este import y el bloque de abajo.
 // import Flota from '@/components/Flota';
-import PieDePagina from '@/components/Footer';
+// Oculto por el momento: el pie de página. Descomenta este import y el bloque
+// de abajo para restaurarlo.
+// import PieDePagina from '@/components/Footer';
+import DataWaveDivider from '@/components/DataWaveDivider';
+import BrilloCypress from '@/components/BrilloCypress';
 
 // Secciones transparentes: el único starfield fijo (GalaxyBackground) se ve
 // igual en TODA la página. Antes era `var(--theme-surface)` (rgba oscuro al
@@ -51,9 +55,23 @@ const MAIN_FOOTER = {
   '--theme-accent-on': '#EBE3A7',
 } as React.CSSProperties;
 
+// --- Tema "cypress": fondos lisos por sección -------------------------------
+// (Paleta grafito; los nombres conservan el id del tema.)
+const CYPRESS_HERO = '#0D1117';     // grafito más oscuro, primera página
+const CYPRESS_PROJECTS = '#222934'; // grafito más claro, proyectos
+// Contenedor de cada sección con brillo: recorta el resplandor a la sección y
+// crea su propio contexto de apilamiento (ver BrilloCypress).
+const CYPRESS_CAPA: React.CSSProperties = {
+  position: 'relative',
+  overflow: 'hidden',
+  isolation: 'isolate',
+};
+
 export default function Pagina() {
   const { theme } = useTheme();
   const isMain = theme.id === 'main';
+  // Tema "Cypress": fondo liso, con la línea wave separando las secciones.
+  const conWave = theme.id === 'cypress';
 
   return (
     <>
@@ -63,9 +81,20 @@ export default function Pagina() {
 
       <main className="min-h-screen overflow-x-hidden relative" style={{ zIndex: 1 }}>
         {/* Hero: presentación + ventana de contacto, ambas al cargar. */}
-        <Inicio />
+        {/* En Cypress el hero va en un tono más oscuro que el verde del resto. */}
+        <div style={conWave ? { ...CYPRESS_CAPA, background: CYPRESS_HERO } : undefined}>
+          {conWave && <BrilloCypress lado="arriba-izquierda" />}
+          <Inicio />
+        </div>
 
-        <div style={isMain ? MAIN_PROJECTS : undefined}>
+        {/* La onda es la frontera: arriba el tono del hero, abajo el verde de
+            proyectos, y el límite entre ambos se mueve con la línea. */}
+        {conWave && (
+          <DataWaveDivider topColor={CYPRESS_HERO} bottomColor={CYPRESS_PROJECTS} />
+        )}
+
+        <div style={isMain ? MAIN_PROJECTS : conWave ? CYPRESS_CAPA : undefined}>
+          {conWave && <BrilloCypress lado="abajo-derecha" />}
           <SeccionProyectos bg={S} />
         </div>
 
@@ -73,9 +102,14 @@ export default function Pagina() {
             antes del pie. Descomentar junto con su import para restaurarla. */}
         {/* <Flota bg={S} /> */}
 
+        {/* Oculto por el momento: el pie de página (en ambos temas), junto con
+            la línea wave que lo separaba en Cypress. Para restaurarlos,
+            descomenta este bloque y el import de PieDePagina. */}
+        {/* {conWave && <DataWaveDivider />}
+
         <div style={isMain ? MAIN_FOOTER : undefined}>
           <PieDePagina bg={S} />
-        </div>
+        </div> */}
       </main>
     </>
   );
