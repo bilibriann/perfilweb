@@ -125,16 +125,8 @@ export default function DataWaveDivider({
         ctx.globalAlpha = 0.70 + e * 0.30
         ctx.shadowBlur  = 5 + e * 12 + intensity * 8
         ctx.fillRect(x, py, 0.9, 0.9)
-
-        if (e > 0.38) {
-          ctx.fillStyle   = '#ffffff'
-          ctx.shadowColor = '#ffffff'
-          ctx.globalAlpha = (e - 0.38) * 1.4
-          ctx.shadowBlur  = 3 + e * 5
-          ctx.fillRect(x, py, 0.6, 0.6)
-          ctx.fillStyle   = accentColor
-          ctx.shadowColor = accentColor
-        }
+        // (Antes, en las zonas de más energía se superponía un destello
+        // blanco; se quitó para que la línea quede solo en el color de acento.)
       }
 
       ctx.globalAlpha = 1.0

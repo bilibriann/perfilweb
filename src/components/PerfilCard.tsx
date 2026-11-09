@@ -17,13 +17,13 @@ const NAME = 'Brian Vilches Mella';
 const FOTO = '/assets/FotoPerfil/fotodeperfil.png';
 const ROLE = 'Desarrollador Web | Programación y Análisis de sistemas.';
 const DESCRIPCION =
-  'Programador orientado al desarrollo backend APIs y lógica de negocio, con conocimientos en bases de datos y programación orientada a objetos. Experiencia previa como Ingeniero Constructor en empresas de construcción, desarrollando competencias en planificación, organización y trabajo en equipo.';
+  'Programador orientado al desarrollo backend: APIs y lógica de negocio, con conocimientos en bases de datos y programación orientada a objetos. Con competencias en planificación, organización y trabajo en equipo.';
 type Idioma = 'es' | 'en';
 const IDIOMAS: Idioma[] = ['es', 'en'];
 
 /** Misma descripción en inglés; se muestra en lugar de la española con el selector. */
 const DESCRIPCION_EN =
-  'Backend-oriented developer focused on APIs and business logic, with knowledge of databases and object-oriented programming. Previously a Construction Engineer at construction companies, where I built skills in planning, organization and teamwork.';
+  'Backend-oriented developer focused on APIs and business logic, with knowledge of databases and object-oriented programming. Skilled in planning, organization and teamwork.';
 /**
  * Stack con el color oficial de cada tecnologia. `rgb` es el mismo color en
  * componentes sueltas, para las capas translucidas (fondo y glow) del hover;
