@@ -94,4 +94,4 @@ export const THEMES: ThemeDefinition[] = [
   },
 ]
 
-export const DEFAULT_THEME_ID = 'portfolio'
+export const DEFAULT_THEME_ID = 'cypress' // Grafito
